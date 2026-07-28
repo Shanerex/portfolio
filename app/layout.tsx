@@ -1,31 +1,46 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
+import './globals.css'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const archivo = Archivo({
+  subsets: ['latin'],
+  weight: ['600'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const plexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-plex-sans',
+  display: 'swap',
+})
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Shane Rex Sasikumar — Senior Software Engineer',
   description:
     'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
-};
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      data-theme="light"
+      className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
+    >
       <body>{children}</body>
     </html>
-  );
+  )
 }

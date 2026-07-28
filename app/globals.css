@@ -1,49 +1,144 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---------- Typography ---------- */
+  --font-display: var(--font-archivo), system-ui, sans-serif;      /* headings, 600 */
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;       /* body, 400 */
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;     /* labels, meta, chips */
+
+  --text-h1: 30px;   --lh-h1: 1.18;  --ls-h1: -0.03em;   /* sidebar name */
+  --text-lede: 21px; --lh-lede: 1.65;                    /* opening paragraph */
+  --text-h3: 18px;   --lh-h3: 1.3;                       /* job title */
+  --text-h4: 16.5px; --lh-h4: 1.3;                       /* project title */
+  --text-body: 15px; --lh-body: 1.7;                     /* bullets */
+  --text-body-lg: 16px; --lh-body-lg: 1.8;               /* About paragraph */
+  --text-sm: 15.5px; --lh-sm: 1.55;                      /* sidebar blurb */
+  --text-sm2: 14.5px; --lh-sm2: 1.6;                     /* project desc, company */
+  --text-nav: 14px;
+  --text-meta: 12px;    --lh-meta: 1.9;                  /* mono dates, location */
+  --text-label: 12.5px; --ls-label: 0.12em;              /* SECTION LABELS, uppercase */
+  --text-chip: 13px;                                     /* skill chips */
+  --text-tag: 11.5px;                                    /* project stack tag */
+
+  /* ---------- Spacing scale (px) ---------- */
+  --sp-1: 5px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 14px; --sp-5: 16px;
+  --sp-6: 18px; --sp-7: 22px; --sp-8: 26px; --sp-9: 28px; --sp-10: 34px;
+  --sp-11: 38px; --sp-12: 44px; --sp-13: 48px; --sp-14: 52px; --sp-15: 56px;
+  --sp-16: 64px; --sp-17: 90px;
+
+  /* ---------- Layout ---------- */
+  --sidebar-w: 340px;
+  --content-max: 720px;
+  --sidebar-pad: 64px 40px;
+  --content-pad: 64px 56px 90px;
+
+  /* ---------- Radius ---------- */
+  --radius-pill: 99px;   /* skill chips, theme toggle */
+  --radius-sm: 8px;      /* only if you add cards */
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --dur-reveal: .6s;
+  --dur-reveal-lede: .7s;
+  --dur-hover: .3s;
+  --dur-theme: .35s;
+  --reveal-offset: 12px;   /* 14px for the lede */
+
+  /* No shadows anywhere. No accent colour. Hierarchy is type + hairlines only. */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------- Light theme (default) ---------- */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --bg:    #faf9f7;             /* page background */
+  --panel: #ffffff;             /* raised surface: theme toggle */
+  --fg:    #16161a;             /* headings, primary links */
+  --fg2:   #3f3f45;             /* body copy, bullets, chips */
+  --fg3:   #5f5d59;             /* secondary text, company, project desc */
+  --fg4:   #7a7772;             /* section labels, inactive nav */
+  --fg5:   #8d8a85;             /* mono meta: dates, location, stack tags */
+  --line:  rgba(0, 0, 0, .10);  /* section dividers, sidebar border */
+  --line2: rgba(0, 0, 0, .14);  /* chip borders, link underlines */
+  --hover: rgba(0, 0, 0, .035); /* optional row hover wash */
 }
 
-html {
-  height: 100%;
+/* ---------- Dark theme ---------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg:    #101011;
+  --panel: #17171a;
+  --fg:    #edebe8;
+  --fg2:   #c4c1bd;
+  --fg3:   #a4a19c;
+  --fg4:   #8e8b87;
+  --fg5:   #78756f;
+  --line:  rgba(255, 255, 255, .09);
+  --line2: rgba(255, 255, 255, .14);
+  --hover: rgba(255, 255, 255, .03);
 }
 
-html,
+/* ---------- Base ---------- */
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
+}
+a { color: var(--fg); text-decoration: none; }
+a:hover { color: var(--fg2); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
+
+/* ---------- Section label ---------- */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--fg4);
+  line-height: 1;
 }
 
-body {
-  min-height: 100%;
+/* ---------- Scroll reveal (JS adds .is-in via IntersectionObserver) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-offset));
+  transition: opacity var(--dur-reveal) ease, transform var(--dur-reveal) ease;
+}
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Page grid ---------- */
+.page {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  padding: var(--sidebar-pad);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.content {
+  padding: var(--content-pad);
+  max-width: var(--content-max);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--fg4);
+  outline-offset: 3px;
 }
