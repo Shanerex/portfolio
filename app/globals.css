@@ -54,8 +54,8 @@
   --fg:    #16161a;             /* headings, primary links */
   --fg2:   #3f3f45;             /* body copy, bullets, chips */
   --fg3:   #5f5d59;             /* secondary text, company, project desc */
-  --fg4:   #7a7772;             /* section labels, inactive nav */
-  --fg5:   #8d8a85;             /* mono meta: dates, location, stack tags */
+  --fg4:   #706d69;             /* section labels, inactive nav, mono meta (AA @ 4.5:1 on --bg) */
+  --fg5:   #8d8a85;             /* decorative only — fails AA at text sizes on --bg, do not use for text */
   --line:  rgba(0, 0, 0, .10);  /* section dividers, sidebar border */
   --line2: rgba(0, 0, 0, .14);  /* chip borders, link underlines */
   --hover: rgba(0, 0, 0, .035); /* optional row hover wash */
@@ -69,8 +69,8 @@
   --fg:    #edebe8;
   --fg2:   #c4c1bd;
   --fg3:   #a4a19c;
-  --fg4:   #8e8b87;
-  --fg5:   #78756f;
+  --fg4:   #8e8b87;             /* AA @ 5.6:1 on --bg */
+  --fg5:   #78756f;             /* decorative only — fails AA at text sizes on --bg, do not use for text */
   --line:  rgba(255, 255, 255, .09);
   --line2: rgba(255, 255, 255, .14);
   --hover: rgba(255, 255, 255, .03);

@@ -10,7 +10,16 @@ export default function ScrollEffects() {
       document.querySelectorAll<HTMLElement>('.reveal'),
     )
 
-    const revealAll = () => revealTargets.forEach((el) => el.classList.add('is-in'))
+    // Failsafe reveals skip the fade — by the time this runs, the element
+    // has already sat unrevealed far longer than the animation is meant to
+    // be felt, so snapping straight to visible (no transition) is correct,
+    // not just expedient: it guarantees no observer/assistive tooling ever
+    // samples the DOM mid-fade at a non-AA-compliant effective contrast.
+    const revealAll = () =>
+      revealTargets.forEach((el) => {
+        el.style.transitionDuration = '0s'
+        el.classList.add('is-in')
+      })
 
     // Failsafe #2: if the observer never fires (or never finishes), show
     // everything anyway. Content must never be stuck invisible. But if the
