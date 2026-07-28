@@ -1,0 +1,42 @@
+.row {
+  display: block;
+  padding: var(--sp-6) 0;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  transition: padding-left var(--dur-hover) ease;
+}
+
+.row:hover {
+  padding-left: var(--sp-2);
+  color: inherit;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-5);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-h4);
+  line-height: var(--lh-h4);
+  color: var(--fg);
+}
+
+.stack {
+  font-family: var(--font-mono);
+  font-size: var(--text-tag);
+  line-height: 1;
+  color: var(--fg5);
+  flex: none;
+}
+
+.description {
+  font-size: var(--text-sm2);
+  line-height: var(--lh-sm2);
+  color: var(--fg3);
+  margin: 7px 0 0;
+}

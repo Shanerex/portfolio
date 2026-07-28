@@ -1,0 +1,10 @@
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--fg4);
+  line-height: 1;
+  margin: 0 0 var(--sp-9);
+}

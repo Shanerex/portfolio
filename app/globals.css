@@ -143,3 +143,25 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; 
   outline: 2px solid var(--fg4);
   outline-offset: 3px;
 }
+
+/* ---------- Section rhythm ---------- */
+.section {
+  margin-top: var(--sp-13);
+  padding-top: var(--sp-12);
+  border-top: 1px solid var(--line);
+}
+
+.section:first-of-type {
+  margin-top: 0;
+  border-top: none;
+}
+
+.lede {
+  font-size: var(--text-lede);
+  line-height: var(--lh-lede);
+  color: var(--fg2);
+  text-wrap: pretty;
+  margin: 0 0 var(--sp-14);
+  --reveal-offset: 14px;
+  transition-duration: var(--dur-reveal-lede);
+}

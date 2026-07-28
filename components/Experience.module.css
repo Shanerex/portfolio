@@ -1,0 +1,47 @@
+.entry {
+  margin-bottom: var(--sp-10);
+}
+
+.entry:last-child {
+  margin-bottom: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-6);
+}
+
+.title {
+  font-size: var(--text-h3);
+  line-height: var(--lh-h3);
+  color: var(--fg);
+}
+
+.dates {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: 1;
+  color: var(--fg5);
+  flex: none;
+}
+
+.company {
+  font-size: var(--text-sm2);
+  line-height: 1.5;
+  color: var(--fg3);
+  margin: var(--sp-1) 0 0;
+}
+
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  color: var(--fg2);
+}
