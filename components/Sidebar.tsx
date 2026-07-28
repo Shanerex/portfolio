@@ -17,8 +17,13 @@ export default function Sidebar() {
         <p className={styles.blurb}>{site.blurb}</p>
 
         <nav className={styles.nav} aria-label="Sections">
-          {site.nav.map((item) => (
-            <a key={item.href} href={item.href} className={styles.navLink}>
+          {site.nav.map((item, i) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={styles.navLink}
+              aria-current={i === 0 ? 'true' : undefined}
+            >
               {item.label}
             </a>
           ))}

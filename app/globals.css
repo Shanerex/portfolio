@@ -91,6 +91,14 @@ a { color: var(--fg); text-decoration: none; }
 a:hover { color: var(--fg2); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 /* ---------- Section label ---------- */
 .label {
   font-family: var(--font-mono);

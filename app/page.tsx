@@ -3,6 +3,7 @@ import Experience from '@/components/Experience'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
 import About from '@/components/About'
+import ScrollEffects from '@/components/ScrollEffects'
 import { site } from '@/content'
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
         <Skills />
         <About />
       </main>
+      <ScrollEffects />
     </div>
   )
 }
