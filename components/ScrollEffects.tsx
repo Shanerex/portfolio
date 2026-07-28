@@ -83,10 +83,40 @@ export default function ScrollEffects() {
     )
     sections.forEach((s) => spyObserver.observe(s))
 
+    // Bottom-of-document fallback. The -40%/-55% band above is a viewport-
+    // relative detection zone: depending on viewport height and how much
+    // total scrollable content there is, that band can end up positioned
+    // such that it never actually reaches the last section(s), even once
+    // the user has scrolled all the way to the bottom of the page. When
+    // that happens, force the last section (last in site.nav / document
+    // order) to be marked active — scrolled-to-bottom is an unambiguous
+    // signal that the final section is "in view" regardless of what the
+    // observer's band currently reports.
+    let scrollTick = false
+    const checkBottom = () => {
+      scrollTick = false
+      const atBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 2
+      if (atBottom && sections.length > 0) {
+        setActive(sections[sections.length - 1].id)
+      }
+    }
+    const onScroll = () => {
+      if (scrollTick) return
+      scrollTick = true
+      window.requestAnimationFrame(checkBottom)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    // Cover the case where the page loads already scrolled to the bottom
+    // (e.g. reload with scroll restoration).
+    checkBottom()
+
     return () => {
       window.clearTimeout(failsafe)
       revealObserver.disconnect()
       spyObserver.disconnect()
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
 

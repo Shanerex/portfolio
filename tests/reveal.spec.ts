@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { site } from '@/content'
 
 test('above-the-fold content is visible on load', async ({ page }) => {
   await page.goto('/')
@@ -49,6 +50,24 @@ test('scroll-spy marks the section in view', async ({ page }) => {
     'true',
   )
 })
+
+const lastNavItem = site.nav[site.nav.length - 1]
+
+for (const viewport of [
+  { name: 'desktop', width: 1440, height: 900 },
+  { name: 'tablet-breakpoint', width: 768, height: 1024 },
+]) {
+  test(`scroll-spy activates the final nav item at the bottom of the page (${viewport.name})`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height })
+    await page.goto('/')
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect(
+      page.locator(`nav a[href="${lastNavItem.href}"]`),
+    ).toHaveAttribute('aria-current', 'true')
+  })
+}
 
 test('nav anchors scroll to their sections', async ({ page }) => {
   await page.goto('/')
