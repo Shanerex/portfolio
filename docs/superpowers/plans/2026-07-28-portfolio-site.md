@@ -22,6 +22,7 @@ These apply to every task. Do not restate, do not violate.
 - **Motion:** hovers change colour, border-colour, or `padding-left` only. No transforms, no scale, no shadows.
 - **Theme storage key:** `srs-theme` in `localStorage`. Attribute is `data-theme="light" | "dark"` on `<html>`.
 - **Reveal must never trap content.** Any change to reveal logic keeps both failsafes from Task 6 intact.
+- **Tests never hardcode content.** Any assertion about copy, counts, or URLs imports from `content.ts` and derives from it. Shane edits content routinely; a suite that goes red when he adds a project is a suite he will learn to ignore. Structural facts (the page title, the four section ids, layout values) may be asserted directly — those are not content.
 - **Commit after every task.** Small, focused commits.
 
 ## File Structure
@@ -138,6 +139,8 @@ Add to the `"scripts"` block:
 ```json
 "test": "playwright test"
 ```
+
+Later tasks import `content.ts` into specs via the `@/content` alias. Playwright reads `tsconfig.json` `paths`, which `create-next-app --import-alias "@/*"` already configured, so this resolves without extra setup. Confirm `tsconfig.json` contains `"paths": { "@/*": ["./*"] }` — if it does not, add it now.
 
 - [ ] **Step 6: Write the failing smoke test**
 
@@ -531,38 +534,46 @@ export const about =
 
 Create `tests/sidebar.spec.ts`:
 
+As in Task 5, assertions derive from `content.ts` so editing content never turns the suite red.
+
 ```ts
 import { test, expect } from '@playwright/test'
+import { site } from '@/content'
 
 test('sidebar renders identity and blurb', async ({ page }) => {
   await page.goto('/')
   const aside = page.locator('aside.sidebar')
-  await expect(aside.getByRole('heading', { level: 1 })).toContainText('Shane Rex')
-  await expect(aside.getByRole('heading', { level: 1 })).toContainText('Sasikumar')
-  await expect(aside).toContainText('Senior Software Engineer building event-driven backends')
+  const heading = aside.getByRole('heading', { level: 1 })
+  for (const part of site.name) {
+    await expect(heading).toContainText(part)
+  }
+  await expect(aside).toContainText(site.blurb)
 })
 
-test('sidebar nav links point at the four sections', async ({ page }) => {
+test('sidebar nav links point at every section', async ({ page }) => {
   await page.goto('/')
   const nav = page.locator('aside.sidebar nav')
-  await expect(nav.getByRole('link')).toHaveCount(4)
-  for (const id of ['#experience', '#projects', '#skills', '#about']) {
-    await expect(nav.locator(`a[href="${id}"]`)).toHaveCount(1)
+  await expect(nav.getByRole('link')).toHaveCount(site.nav.length)
+  for (const item of site.nav) {
+    await expect(nav.locator(`a[href="${item.href}"]`)).toHaveText(item.label)
   }
 })
 
 test('sidebar footer shows location, availability and contact links', async ({ page }) => {
   await page.goto('/')
   const aside = page.locator('aside.sidebar')
-  await expect(aside).toContainText('Bengaluru, India')
-  await expect(aside).toContainText('Open to new roles')
+  await expect(aside).toContainText(site.location)
+  await expect(aside).toContainText(site.availability)
   await expect(aside.locator('a[href^="mailto:"]')).toHaveCount(1)
+  for (const link of site.links) {
+    await expect(aside.locator(`a[href="${link.href}"]`)).toHaveText(link.label)
+  }
 })
 
 test('CV link opens a PDF in a new tab', async ({ page }) => {
   await page.goto('/')
   const cv = page.locator('aside.sidebar a', { hasText: 'CV' })
-  await expect(cv).toHaveAttribute('href', '/cv.pdf')
+  await expect(cv).toHaveAttribute('href', /\.pdf$/)
   await expect(cv).toHaveAttribute('target', '_blank')
   await expect(cv).toHaveAttribute('rel', /noreferrer/)
 })
@@ -1019,67 +1030,81 @@ git commit -m "feat: add theme toggle with pre-paint application"
 
 Create `tests/sections.spec.ts`:
 
+**Every assertion is derived from `content.ts`, never hardcoded.** Shane edits content regularly; a test asserting `toHaveCount(3)` would go red the moment he adds a fourth project, which would train him to ignore a red suite. These tests verify that *whatever is in `content.ts` renders correctly* — they stay green as content changes and still fail if rendering breaks.
+
 ```ts
 import { test, expect } from '@playwright/test'
+import { about, experience, projects, site, skills } from '@/content'
 
 test('all four sections exist with headings', async ({ page }) => {
   await page.goto('/')
-  for (const [id, heading] of [
-    ['experience', 'Experience'],
-    ['projects', 'Projects'],
-    ['skills', 'Skills'],
-    ['about', 'About'],
-  ]) {
+  for (const item of site.nav) {
+    const id = item.href.slice(1)
     const section = page.locator(`section#${id}`)
     await expect(section).toHaveCount(1)
-    await expect(section.getByRole('heading', { level: 2 })).toHaveText(heading)
+    await expect(section.getByRole('heading', { level: 2 })).toHaveText(item.label)
   }
 })
 
 test('lede renders above the first section', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('main')).toContainText(
-    'Three years building distributed services that stay up',
-  )
+  await expect(page.locator('.lede')).toHaveText(site.lede)
 })
 
-test('experience renders both roles with their bullets', async ({ page }) => {
+test('every role renders with all of its bullets', async ({ page }) => {
   await page.goto('/')
   const section = page.locator('section#experience')
-  await expect(section.getByRole('heading', { level: 3 })).toHaveCount(2)
-  await expect(section).toContainText('Senior Software Engineer')
-  await expect(section).toContainText('2025 — Present')
-  await expect(section).toContainText('Bounteous x Accolite')
-  await expect(section).toContainText('99.99% delivery')
-  await expect(section).toContainText('JUnit coverage 75% → 90%')
+  await expect(section.getByRole('heading', { level: 3 })).toHaveCount(experience.length)
+
+  for (const role of experience) {
+    const entry = section.locator('article', { hasText: role.title }).first()
+    await expect(entry).toContainText(role.dates)
+    await expect(entry).toContainText(role.company)
+    for (const bullet of role.bullets) {
+      await expect(entry).toContainText(bullet)
+    }
+  }
 })
 
-test('project rows link out to GitHub safely', async ({ page }) => {
+test('every project renders and links out safely', async ({ page }) => {
   await page.goto('/')
   const rows = page.locator('section#projects a')
-  await expect(rows).toHaveCount(3)
-  for (let i = 0; i < 3; i++) {
-    await expect(rows.nth(i)).toHaveAttribute('href', /^https:\/\/github\.com\//)
-    await expect(rows.nth(i)).toHaveAttribute('target', '_blank')
-    await expect(rows.nth(i)).toHaveAttribute('rel', /noreferrer/)
+  await expect(rows).toHaveCount(projects.length)
+
+  for (const [i, project] of projects.entries()) {
+    const row = rows.nth(i)
+    await expect(row).toHaveAttribute('href', project.href)
+    await expect(row).toHaveAttribute('target', '_blank')
+    await expect(row).toHaveAttribute('rel', /noreferrer/)
+    await expect(row).toContainText(project.name)
+    await expect(row).toContainText(project.stack)
+    await expect(row).toContainText(project.description)
   }
-  await expect(rows.first()).toContainText('file-upload-sdd')
-  await expect(rows.first()).toContainText('Spring Boot 4 · GCS')
 })
 
-test('skills render as chips', async ({ page }) => {
+test('project links are all external https URLs', async ({ page }) => {
+  await page.goto('/')
+  for (const project of projects) {
+    expect(project.href, `${project.name} must use https`).toMatch(/^https:\/\//)
+  }
+})
+
+test('every skill renders as a chip', async ({ page }) => {
   await page.goto('/')
   const chips = page.locator('section#skills li')
-  await expect(chips).toHaveCount(14)
-  await expect(chips.first()).toHaveText('Java')
+  await expect(chips).toHaveCount(skills.length)
+  for (const [i, skill] of skills.entries()) {
+    await expect(chips.nth(i)).toHaveText(skill)
+  }
 })
 
 test('about renders the paragraph and the email link', async ({ page }) => {
   await page.goto('/')
   const section = page.locator('section#about')
-  await expect(section).toContainText('Thiagarajar College of Engineering')
+  await expect(section.locator('p')).toHaveText(about)
   const email = section.locator('a[href^="mailto:"]')
-  await expect(email).toHaveText('shanerexsasikumar@gmail.com →')
+  await expect(email).toHaveText(`${site.email} →`)
+  await expect(email).toHaveAttribute('href', `mailto:${site.email}`)
 })
 ```
 
@@ -2057,7 +2082,20 @@ npm run build && ls -la out/cv.pdf
 
 - [ ] **Step 3: Write the project README**
 
-The design handoff already lives at `design/README.md`. Create a new root `README.md` covering: what the site is, the stack, `npm run dev` / `npm run build` / `npm test`, where content lives (`content.ts`), and where the design authority lives (`design/`).
+The design handoff already lives at `design/README.md`. Create a new root `README.md` covering: what the site is, the stack, `npm run dev` / `npm run build` / `npm test`, and where the design authority lives (`design/`).
+
+It must include an **Updating content** section, since this is the only routine maintenance the site needs:
+
+> All copy lives in `content.ts`. Nothing else needs touching.
+>
+> - **New experience bullet** — append a string to that role's `bullets` array.
+> - **New role** — prepend an object to `experience` (newest first).
+> - **New project** — append an object to `projects` with `name`, `stack`, `description`, `href`.
+> - **New skill** — append a string to `skills`.
+>
+> Commit and push. Vercel rebuilds and deploys automatically in under a minute. You can edit `content.ts` directly in GitHub's web UI and commit from the browser — no local clone needed.
+>
+> The types catch mistakes at build time, and a build that fails to compile is not deployed, so a typo cannot take the live site down. Run `npm test` locally first if you want to be sure; the tests read from `content.ts`, so they validate your new entries rather than breaking on them.
 
 - [ ] **Step 4: Run the full suite one final time**
 
