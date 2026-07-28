@@ -12,9 +12,15 @@ export default function ScrollEffects() {
 
     const revealAll = () => revealTargets.forEach((el) => el.classList.add('is-in'))
 
-    // Failsafe #2: if the observer never fires, show everything anyway.
-    // Content must never be stuck invisible.
-    const failsafe = window.setTimeout(revealAll, REVEAL_FAILSAFE_MS)
+    // Failsafe #2: if the observer never fires (or never finishes), show
+    // everything anyway. Content must never be stuck invisible. But if the
+    // observer has already revealed everything on its own, this timer must
+    // be a no-op rather than snapping/re-triggering anything.
+    let remaining = revealTargets.length
+    const failsafe = window.setTimeout(() => {
+      if (remaining <= 0) return
+      revealAll()
+    }, REVEAL_FAILSAFE_MS)
 
     if (!('IntersectionObserver' in window)) {
       revealAll()
@@ -27,6 +33,8 @@ export default function ScrollEffects() {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-in')
             revealObserver.unobserve(entry.target)
+            remaining -= 1
+            if (remaining <= 0) window.clearTimeout(failsafe)
           }
         }
       },
