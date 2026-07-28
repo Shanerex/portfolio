@@ -33,3 +33,16 @@
 [data-theme='dark'] .dot {
   background: var(--fg4);
 }
+
+/* .sidebar becomes position: static below 1024px (see globals.css), so the
+   toggle's absolute top/right offsets no longer resolve against it. Flow
+   the toggle into the sidebar instead, stacked above the heading and
+   pinned to the right edge, so it keeps a top-right feel without its
+   bounding box ever sharing the heading's full-width row. */
+@media (max-width: 1023px) {
+  .toggle {
+    position: static;
+    width: fit-content;
+    margin: 0 0 var(--sp-6) auto;
+  }
+}

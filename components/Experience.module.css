@@ -45,3 +45,15 @@
   line-height: var(--lh-body);
   color: var(--fg2);
 }
+
+@media (max-width: 767px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-1);
+  }
+
+  .dates {
+    font-size: var(--text-tag);
+  }
+}

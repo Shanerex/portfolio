@@ -80,3 +80,35 @@
 .link:hover {
   color: var(--fg);
 }
+
+@media (max-width: 1023px) {
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--sp-7);
+    margin-top: var(--sp-8);
+  }
+
+  .navLink::before {
+    display: none;
+  }
+
+  .contact {
+    margin-bottom: var(--sp-8);
+  }
+}
+
+@media (max-width: 767px) {
+  .name {
+    font-size: 26px;
+  }
+
+  /* 44px minimum tap targets */
+  .navLink,
+  .email,
+  .link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

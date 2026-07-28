@@ -40,3 +40,18 @@
   color: var(--fg3);
   margin: 7px 0 0;
 }
+
+@media (max-width: 767px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .stack {
+    flex: 0 0 100%;
+  }
+
+  .row {
+    min-height: 44px;
+  }
+}

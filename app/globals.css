@@ -173,3 +173,43 @@ html {
   --reveal-offset: 14px;
   transition-duration: var(--dur-reveal-lede);
 }
+
+/* ---------- Tablet: 768–1023px ---------- */
+@media (max-width: 1023px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    padding: 48px 40px 0;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    display: block;
+  }
+
+  .content {
+    padding: 48px 40px 72px;
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+}
+
+/* ---------- Mobile: < 768px ---------- */
+@media (max-width: 767px) {
+  .sidebar {
+    padding: 32px 20px 0;
+  }
+
+  .content {
+    padding: 32px 20px 64px;
+  }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+}
