@@ -29,6 +29,19 @@ export const metadata: Metadata = {
     'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
 }
 
+const themeScript = `
+(function(){
+  try {
+    var k = 'srs-theme';
+    var stored = localStorage.getItem(k);
+    var t = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+`
+
 export default function RootLayout({
   children,
 }: {
@@ -37,9 +50,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="light"
+      suppressHydrationWarning
       className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>{children}</body>
     </html>
   )

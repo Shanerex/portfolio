@@ -1,4 +1,5 @@
 import { site } from '@/content'
+import ThemeToggle from './ThemeToggle'
 import styles from './Sidebar.module.css'
 
 export default function Sidebar() {
@@ -6,6 +7,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
+      <ThemeToggle />
       <div>
         <h1 className={styles.name}>
           {firstName}

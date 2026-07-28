@@ -1,0 +1,35 @@
+.toggle {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px 13px;
+  border: 1px solid var(--line2);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--fg3);
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.toggle:hover {
+  border-color: var(--fg4);
+  color: var(--fg);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--fg4);
+  background: transparent;
+}
+
+[data-theme='dark'] .dot {
+  background: var(--fg4);
+}

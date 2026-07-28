@@ -121,6 +121,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; 
 }
 
 .sidebar {
+  position: relative;
   position: sticky;
   top: 0;
   height: 100dvh;
