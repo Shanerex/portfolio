@@ -5,6 +5,7 @@ import Skills from '@/components/Skills'
 import About from '@/components/About'
 import ScrollEffects from '@/components/ScrollEffects'
 import CourtLines from '@/components/CourtLines'
+import Hero from '@/components/Hero'
 import { site } from '@/content'
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <CourtLines />
       <Sidebar />
       <main className="content">
+        <Hero />
         <p className="lede reveal">{site.lede}</p>
         <Experience />
         <Projects />

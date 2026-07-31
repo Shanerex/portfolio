@@ -30,11 +30,11 @@ export default function Sidebar() {
     <aside className="sidebar">
       <ThemeToggle />
       <div>
-        <h1 className={styles.name}>
+        <h2 className={styles.name}>
           {firstName}
           <br />
           {lastName}
-        </h1>
+        </h2>
         <p className={styles.blurb}>{site.blurb}</p>
 
         <nav className={styles.nav} aria-label="Sections">

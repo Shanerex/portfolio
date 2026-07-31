@@ -1,0 +1,75 @@
+.hero {
+  min-height: 100dvh;
+  display: grid;
+  align-content: space-between;
+  padding-block: var(--s-7) var(--s-6);
+  position: relative;
+  z-index: 1;
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+  margin: 0;
+}
+
+.thesis {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' 112, 'wght' 800;
+  font-size: var(--t-hero);
+  line-height: var(--lh-hero);
+  letter-spacing: var(--ls-hero);
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.rule {
+  width: 96px;
+  height: 4px;
+  background: var(--ball);
+  margin: var(--s-5) 0 var(--s-4);
+  transform-origin: left center;
+}
+
+.role {
+  font-size: var(--t-lede);
+  line-height: var(--lh-lede);
+  color: var(--line-2);
+  margin: 0;
+  max-width: 46ch;
+}
+
+.role strong { color: var(--ink); font-weight: 600; }
+
+.cue {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--meta);
+}
+
+/* ---- Load sequence: floodlight is on CourtLines; here the type arrives ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .name, .thesis, .role, .cue { animation: rise 500ms var(--ease-cut) backwards; }
+  .name   { animation-delay: 450ms; }
+  .thesis { animation-delay: 530ms; }
+  .rule   { animation: draw 400ms var(--ease-cut) 900ms backwards; }
+  .role   { animation-delay: 1150ms; }
+  .cue    { animation-delay: 1150ms; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}

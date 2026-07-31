@@ -4,7 +4,7 @@ import { site } from '@/content'
 test('sidebar renders identity and blurb', async ({ page }) => {
   await page.goto('/')
   const aside = page.locator('aside.sidebar')
-  const heading = aside.getByRole('heading', { level: 1 })
+  const heading = aside.getByRole('heading', { level: 2 })
   for (const part of site.name) {
     await expect(heading).toContainText(part)
   }
