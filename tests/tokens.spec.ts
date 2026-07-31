@@ -45,12 +45,12 @@ test('page uses the two-column grid at desktop width', async ({ page }) => {
 
 const NIGHT = {
   surround: '#060a11', court: '#0f3a63', courtTint: '#0a2440',
-  line: '#eef3f8', line2: '#9db0c6', meta: '#6e839b',
+  ink: '#eef3f8', line2: '#9db0c6', meta: '#6e839b',
   ball: '#dcf24b', ballInk: '#dcf24b', onCourt: '#eef3f8',
 }
 const DAY = {
   surround: '#eaedf1', court: '#1f5a93', courtTint: '#3e7cb8',
-  line: '#0c1a2a', line2: '#3c4e63', meta: '#56677d',
+  ink: '#0c1a2a', line2: '#3c4e63', meta: '#56677d',
   ball: '#dcf24b', ballInk: '#55670a', onCourt: '#f7f9fb',
 }
 
@@ -62,7 +62,7 @@ async function palette(page: import('@playwright/test').Page, theme: 'night' | '
     const read = (n: string) => s.getPropertyValue(n).trim()
     return {
       surround: read('--surround'), court: read('--court'), courtTint: read('--court-tint'),
-      line: read('--line'), line2: read('--line-2'), meta: read('--meta'),
+      ink: read('--ink'), line2: read('--line-2'), meta: read('--meta'),
       ball: read('--ball'), ballInk: read('--ball-ink'), onCourt: read('--on-court'),
     }
   })
@@ -82,7 +82,7 @@ for (const [name, p] of [['night', NIGHT], ['day', DAY]] as const) {
       ['line-2 on surround', p.line2, p.surround],
       ['meta on surround', p.meta, p.surround],
       ['ball-ink on surround', p.ballInk, p.surround],
-      ['line on surround', p.line, p.surround],
+      ['ink on surround', p.ink, p.surround],
       ['on-court on court', p.onCourt, p.court],
     ]
     for (const [label, fg, bg] of pairs) {
