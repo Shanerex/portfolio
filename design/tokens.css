@@ -31,6 +31,14 @@
   --dur-wipe:  700ms;
   --dur-hover: 250ms;
   --dur-theme: 450ms;
+
+  /* Fonts */
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* Radius */
+  --radius-pill: 99px;
 }
 
 :root,

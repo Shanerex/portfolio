@@ -34,13 +34,12 @@ test('no font is requested from Google at runtime', async ({ page }) => {
   expect(googleRequests).toEqual([])
 })
 
-test('page uses the two-column grid at desktop width', async ({ page }) => {
+test('content clears the fixed rail at desktop width', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  const cols = await page
-    .locator('.page')
-    .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-  expect(cols.startsWith('340px')).toBe(true)
+  const rail = await page.locator('[data-testid="rail"]').boundingBox()
+  const content = await page.locator('main.content').boundingBox()
+  expect(content!.x).toBeGreaterThanOrEqual(rail!.x + rail!.width)
 })
 
 const NIGHT = {

@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-for (const scheme of ['light', 'dark'] as const) {
-  test(`no accessibility violations in ${scheme} theme`, async ({ browser }) => {
-    const ctx = await browser.newContext({ colorScheme: scheme })
+for (const theme of ['night', 'day'] as const) {
+  test(`no accessibility violations in ${theme} theme`, async ({ browser }) => {
+    const ctx = await browser.newContext()
     const page = await ctx.newPage()
     await page.goto('/')
+    await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
     // Reveal everything first — axe should not judge mid-animation opacity.
     await page.waitForTimeout(2100)
     const results = await new AxeBuilder({ page })

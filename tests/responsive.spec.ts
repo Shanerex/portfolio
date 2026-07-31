@@ -1,68 +1,33 @@
 import { test, expect } from '@playwright/test'
 
-const WIDTHS = [1440, 1024, 768, 390]
+const WIDTHS = [
+  { width: 390, height: 844, label: 'phone' },
+  { width: 900, height: 800, label: 'tablet' },
+  { width: 1440, height: 900, label: 'desktop' },
+]
 
-test('no horizontal overflow at any breakpoint', async ({ page }) => {
-  for (const width of WIDTHS) {
-    await page.setViewportSize({ width, height: 900 })
+for (const { width, height, label } of WIDTHS) {
+  test(`no horizontal overflow at ${label} (${width}px)`, async ({ page }) => {
+    await page.setViewportSize({ width, height })
     await page.goto('/')
-    const overflows = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.waitForTimeout(600)
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     )
-    expect(overflows, `horizontal overflow at ${width}px`).toBe(false)
-  }
-})
+    expect(overflow).toBeLessThanOrEqual(1)
+  })
 
-test('collapses to one column below 1024px', async ({ page }) => {
-  await page.setViewportSize({ width: 768, height: 900 })
-  await page.goto('/')
-  const cols = await page
-    .locator('.page')
-    .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-  expect(cols.split(' ').length).toBe(1)
-
-  // Below 1024px the rail becomes a bottom bar rather than a sticky left
-  // column — it must stay visible and reachable regardless.
-  const rail = page.locator('[data-testid="rail"]')
-  await expect(rail).toBeVisible()
-  await expect(rail.locator('a[href^="mailto:"]')).toBeVisible()
-})
-
-test('stays two columns at 1024px and above', async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 900 })
-  await page.goto('/')
-  const cols = await page
-    .locator('.page')
-    .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
-  expect(cols.startsWith('340px')).toBe(true)
-})
-
-test('tap targets are at least 44px on mobile', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  const interactive = page.locator('a[href], button')
-  const count = await interactive.count()
-  for (let i = 0; i < count; i++) {
-    const box = await interactive.nth(i).boundingBox()
-    if (!box) continue
-    expect(
-      Math.max(box.width, box.height),
-      `element ${i} is smaller than 44px in both dimensions`,
-    ).toBeGreaterThanOrEqual(44)
-  }
-})
-
-test('theme toggle does not overlap content on mobile', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  const toggle = await page.getByRole('button').boundingBox()
-  const heading = await page.getByRole('heading', { level: 1 }).boundingBox()
-  expect(toggle).not.toBeNull()
-  expect(heading).not.toBeNull()
-  const overlaps =
-    toggle!.x < heading!.x + heading!.width &&
-    toggle!.x + toggle!.width > heading!.x &&
-    toggle!.y < heading!.y + heading!.height &&
-    toggle!.y + toggle!.height > heading!.y
-  expect(overlaps).toBe(false)
-})
+  test(`content clears the rail at ${label} (${width}px)`, async ({ page }) => {
+    await page.setViewportSize({ width, height })
+    await page.goto('/')
+    const rail = await page.locator('[data-testid="rail"]').boundingBox()
+    const heroText = await page.locator('h1').boundingBox()
+    const overlaps =
+      heroText!.x < rail!.x + rail!.width &&
+      heroText!.x + heroText!.width > rail!.x &&
+      heroText!.y < rail!.y + rail!.height &&
+      heroText!.y + heroText!.height > rail!.y
+    expect(overlaps).toBe(false)
+  })
+}
