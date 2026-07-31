@@ -69,6 +69,33 @@ for (const viewport of [
   })
 }
 
+test('nav ticks track the section in view', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  await page.locator('section#projects').scrollIntoViewIfNeeded()
+  await expect(page.locator('a[data-nav-tick][href="#projects"]')).toHaveAttribute(
+    'aria-current',
+    'true',
+  )
+  await expect(page.locator('a[data-nav-tick][href="#skills"]')).not.toHaveAttribute(
+    'aria-current',
+    'true',
+  )
+})
+
+test('reduced motion renders every revealable element visible', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce' })
+  const page = await context.newPage()
+  await page.goto('/')
+  const hidden = await page.evaluate(() =>
+    [...document.querySelectorAll('.reveal')].filter(
+      (el) => getComputedStyle(el).opacity !== '1',
+    ).length,
+  )
+  expect(hidden).toBe(0)
+  await context.close()
+})
+
 test('nav anchors scroll to their sections', async ({ page }) => {
   await page.goto('/')
   await page.locator('nav a[href="#skills"]').click()
