@@ -31,6 +31,7 @@ Copy recovered from the design canvas ships as a working default so the site bui
 | Project links | All three link out to GitHub, `target="_blank" rel="noreferrer"` | Follows from one-page-forever; no internal case-study pages |
 | CV link | Opens PDF in a new tab | Recruiters skim without a download landing in their Downloads folder |
 | Fifth section | Not added | Spec-driven development is already carried by a bullet in the current role and the `file-upload-sdd` project. Protects the one-minute scan |
+| Project status | Small pill left of the project name, `in-progress` only | Not in the original design canvas. `completed` is the default state for most projects, so only the exception is flagged. Pill reuses the existing skill-chip pattern (bordered, 99px radius, mono) rather than adding a new visual element |
 | OG / link preview | Out of scope | `<title>` and meta description only — browser tab and search result, no unfurl card |
 
 ## Architecture
@@ -119,12 +120,11 @@ OG / link-preview cards, case-study pages, blog, analytics, imagery of any kind 
 
 ## Assets required before launch
 
-Stubbed in `content.ts` so they do not block development:
+Content is finalized in `content.ts` (see Task 3 of the implementation plan) — LinkedIn/GitHub URLs, experience bullets, skills, and the projects list (`alef-jasper-rebuild`, `CryptoUIJC`, `resume-refresh`) are all real values, not placeholders.
 
-- LinkedIn URL and GitHub username
-- Repo URLs for `file-upload-sdd`, `alef-jasper-rebuild`, `concurrency-client-server`
-- CV PDF for `public/`
-- Final content: summary, experience bullets, skills, hobbies
+Still outstanding:
+
+- CV PDF for `public/` — none exists yet anywhere in `career/` or `Documents/Projects/`
 
 ## Known gap in the handoff
 

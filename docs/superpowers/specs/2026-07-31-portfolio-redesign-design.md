@@ -68,19 +68,28 @@ All tokens live in `app/globals.css` as the runtime source of truth. `design/tok
 
 ### Contrast — verified WCAG AA
 
+Computed with the exact sRGB formula (piecewise linear segment, exponent 2.4), not a gamma-2.2 approximation.
+
 | Pair | Ratio | Requirement |
 |---|---|---|
-| Night `--line-2` on `--surround` | 9.5:1 | AA normal text |
-| Night `--meta` on `--surround` | 5.5:1 | AA normal text |
-| Night `--ball` on `--surround` | 16.8:1 | AA normal text |
-| Night `--ball` on `--court` | 9.4:1 | AA normal text |
-| Night `--on-court` on `--court` | 10.5:1 | AA normal text |
+| Night `--line-2` on `--surround` | 8.9:1 | AA normal text |
+| Night `--meta` on `--surround` | 5.1:1 | AA normal text |
+| Night `--ball` on `--surround` | 15.9:1 | AA normal text |
+| Night `--ball` on `--court` | 9.3:1 | AA normal text |
+| Night `--on-court` on `--court` | 10.4:1 | AA normal text |
 | Day `--line-2` on `--surround` | 7.3:1 | AA normal text |
 | Day `--meta` on `--surround` | 4.9:1 | AA normal text |
-| Day `--ball-ink` on `--surround` | 5.3:1 | AA normal text |
-| Day `--on-court` on `--court` | 6.4:1 | AA normal text |
+| Day `--ball-ink` on `--surround` | 5.4:1 | AA normal text |
+| Day `--on-court` on `--court` | 6.8:1 | AA normal text |
 
-`--ball` (`#DCF24B`) on the day surround is ~1.6:1 and must never carry text in day match. `--court-tint` is ~4.0:1 against both white and `--line` and must never carry text in either theme. These two rules are the reason the day palette has separate `--ball-ink` and `--court-tint` tokens.
+Every pair clears 4.5:1, the AA threshold for normal text. The narrowest margin is day `--meta` at 4.92:1 — that token has almost no headroom, so darkening it is the required fix if the day surround is ever lightened.
+
+Two pairings are unsafe and must never carry text:
+
+- `--ball` (`#DCF24B`) on the day surround is **1.1:1** — effectively invisible. This is why day match needs `--ball-ink`.
+- `--court-tint` in either theme falls below 4.5:1 against both `--on-court` and `--line`. It is decorative only.
+
+Tests assert the 4.5:1 threshold rather than these exact figures, so a palette edit fails the build on the requirement, not on a rounding difference.
 
 ### Typography
 
