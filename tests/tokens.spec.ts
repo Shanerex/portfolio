@@ -98,3 +98,31 @@ test('unsafe pairings are documented as failing, so nobody uses them for text', 
   expect(contrastRatio(NIGHT.onCourt, NIGHT.courtTint)).toBeGreaterThanOrEqual(4.5)
   expect(contrastRatio(DAY.onCourt, DAY.courtTint)).toBeLessThan(4.5)
 })
+
+test('body background and text color follow the active theme, not the legacy light default', async ({ page }) => {
+  await page.goto('/')
+  for (const theme of ['night', 'day'] as const) {
+    await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
+    // body's background/color transition over --dur-theme (450ms); wait it out so we
+    // assert the settled value, not a mid-transition frame.
+    await page.waitForTimeout(500)
+    const [bodyBg, bodyColor, tokenBg, tokenInk] = await page.evaluate(() => {
+      const bodyStyle = getComputedStyle(document.body)
+      const rootStyle = getComputedStyle(document.documentElement)
+      return [
+        bodyStyle.backgroundColor,
+        bodyStyle.color,
+        rootStyle.getPropertyValue('--surround').trim(),
+        rootStyle.getPropertyValue('--ink').trim(),
+      ]
+    })
+    // Convert the token hex values the same way the browser reports computed color
+    const hexToRgb = (hex: string) => {
+      const n = hex.replace('#', '')
+      const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16))
+      return `rgb(${r}, ${g}, ${b})`
+    }
+    expect(bodyBg, `${theme}: body background`).toBe(hexToRgb(tokenBg))
+    expect(bodyColor, `${theme}: body color`).toBe(hexToRgb(tokenInk))
+  }
+})

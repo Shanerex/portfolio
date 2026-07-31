@@ -149,15 +149,15 @@
 /* ---------- Base ---------- */
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--surround);
   background-image: repeating-linear-gradient(
     to bottom,
-    var(--line-faint) 0px,
-    var(--line-faint) 1px,
+    var(--rule) 0px,
+    var(--rule) 1px,
     transparent 1px,
     transparent 88px
   );
-  color: var(--fg);
+  color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--text-body);
   line-height: var(--lh-body);
