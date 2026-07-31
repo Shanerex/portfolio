@@ -86,6 +86,17 @@ test('project links are all external https URLs', async ({ page }) => {
   }
 })
 
+test('projects alternate across the court', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const rows = page.locator('section#projects [data-project]')
+  await expect(rows).toHaveCount(projects.length)
+  const first = await rows.nth(0).boundingBox()
+  const second = await rows.nth(1).boundingBox()
+  // Odd-indexed projects sit on the ad court, right of the centre line
+  expect(second!.x).toBeGreaterThan(first!.x)
+})
+
 test('every skill renders in content order under its category', async ({ page }) => {
   await page.goto('/')
   const allItems = skills.flatMap((group) => group.items)

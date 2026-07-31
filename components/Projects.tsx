@@ -12,16 +12,15 @@ export default function Projects() {
     <section id="projects" className="section">
       <SectionLabel>Projects</SectionLabel>
       {projects.map((project, i) => {
+        const placement = i % 2 === 0 ? 'deuce' : 'ad'
         const body = (
           <>
             <div className={styles.header}>
-              <div className={styles.title}>
-                <span className={styles.name}>{project.name}</span>
-                <span className={styles.status} data-status={project.status}>
-                  <span className={styles.dot} aria-hidden="true" />
-                  {STATUS_LABEL[project.status]}
-                </span>
-              </div>
+              <span className={styles.name}>{project.name}</span>
+              <span className={styles.status} data-status={project.status}>
+                <span className={styles.dot} aria-hidden="true" />
+                {STATUS_LABEL[project.status]}
+              </span>
               <span className={styles.stack}>{project.stack}</span>
             </div>
             <ul className={styles.bullets}>
@@ -32,24 +31,28 @@ export default function Projects() {
           </>
         )
 
-        return project.href ? (
-          <a
-            key={project.name}
-            className={`${styles.row} reveal`}
-            style={{ transitionDelay: `${Math.min(i, 3) * 0.06}s` }}
-            href={project.href}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {body}
-          </a>
-        ) : (
-          <div
-            key={project.name}
-            className={`${styles.row} reveal`}
-            style={{ transitionDelay: `${Math.min(i, 3) * 0.06}s` }}
-          >
-            {body}
+        return (
+          <div className="court" key={project.name}>
+            {project.href ? (
+              <a
+                data-project
+                className={`${placement} ${styles.row} reveal`}
+                style={{ transitionDelay: `${Math.min(i, 3) * 0.06}s` }}
+                href={project.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {body}
+              </a>
+            ) : (
+              <div
+                data-project
+                className={`${placement} ${styles.row} reveal`}
+                style={{ transitionDelay: `${Math.min(i, 3) * 0.06}s` }}
+              >
+                {body}
+              </div>
+            )}
           </div>
         )
       })}
