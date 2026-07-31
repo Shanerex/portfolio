@@ -1,4 +1,5 @@
 import Rail from '@/components/Rail'
+import Intro from '@/components/Intro'
 import Experience from '@/components/Experience'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
@@ -7,7 +8,6 @@ import ScrollEffects from '@/components/ScrollEffects'
 import CourtLines from '@/components/CourtLines'
 import Hero from '@/components/Hero'
 import ImpactBand from '@/components/ImpactBand'
-import { site } from '@/content'
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
       <main className="content">
         <Hero />
         <ImpactBand />
-        <p className="lede reveal">{site.lede}</p>
+        <Intro />
         <Experience />
         <Projects />
         <Skills />

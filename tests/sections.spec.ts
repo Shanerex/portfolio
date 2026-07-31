@@ -11,9 +11,23 @@ test('all four sections exist with headings', async ({ page }) => {
   }
 })
 
-test('lede renders above the first section', async ({ page }) => {
+test('intro renders the lede in the reading column', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  await expect(page.locator('.lede')).toHaveText(site.lede)
+  const intro = page.locator('[data-testid="intro"]')
+  await expect(intro).toHaveText(site.lede)
+})
+
+test('experience entries keep their dates alongside each title', async ({ page }) => {
+  await page.goto('/')
+  const section = page.locator('section#experience')
+  for (const role of experience) {
+    await expect(section).toContainText(role.title)
+    await expect(section).toContainText(role.dates)
+    for (const bullet of role.bullets) {
+      await expect(section).toContainText(bullet)
+    }
+  }
 })
 
 test('every role renders with all of its bullets', async ({ page }) => {
