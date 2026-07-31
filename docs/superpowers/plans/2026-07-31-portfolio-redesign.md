@@ -21,6 +21,7 @@
 - **Night is the first-visit default,** unconditionally. The OS `prefers-color-scheme` is not consulted.
 - **Accessibility floor:** zero axe violations in both themes, visible keyboard focus, `prefers-reduced-motion` fully respected, interactive targets ≥44px.
 - **Exact token values are defined in Task 1** and must be used verbatim thereafter.
+- **The new primary-text token is named `--ink`, not `--line`.** It was renamed during Task 1's implementation because `--line` collides with the legacy hairline-divider token of the same name — same identifier, incompatible meaning (opaque text colour vs. translucent divider) and incompatible format (hex vs. rgba). The legacy `--line`/`--fg*`/`--bg`/`--accent` block must keep its original selector, `:root, [data-theme='light']` (bare `:root` included) — that inclusion is what lets legacy tokens keep resolving for not-yet-migrated components after Task 6 changes the `data-theme` attribute's value space to `night`/`day`. Do not narrow that selector and do not reintroduce a token named `--line` in the new system.
 
 ---
 
@@ -35,7 +36,7 @@
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: CSS custom properties consumed by every later task — `--surround`, `--court`, `--court-tint`, `--line`, `--line-2`, `--meta`, `--ball`, `--ball-ink`, `--on-court`, `--flood`, `--rule`, `--rule-strong`, `--t-*`, `--s-1`..`--s-11`, `--page-max`, `--gutter`, `--col-gap`, `--rail-w`, `--ease-cut`, `--ease-wipe`, `--dur-cut`, `--dur-wipe`, `--dur-hover`, `--dur-theme`. Also `contrastRatio(hexA, hexB): number` and `rgbToHex(cssRgb): string` from `tests/helpers/contrast.ts`.
+- Produces: CSS custom properties consumed by every later task — `--surround`, `--court`, `--court-tint`, `--ink`, `--line-2`, `--meta`, `--ball`, `--ball-ink`, `--on-court`, `--flood`, `--rule`, `--rule-strong`, `--t-*`, `--s-1`..`--s-11`, `--page-max`, `--gutter`, `--col-gap`, `--rail-w`, `--ease-cut`, `--ease-wipe`, `--dur-cut`, `--dur-wipe`, `--dur-hover`, `--dur-theme`. Also `contrastRatio(hexA, hexB): number` and `rgbToHex(cssRgb): string` from `tests/helpers/contrast.ts`.
 
 - [ ] **Step 1: Write the failing contrast helper test**
 
@@ -113,12 +114,12 @@ Append to `tests/tokens.spec.ts`:
 ```ts
 const NIGHT = {
   surround: '#060A11', court: '#0F3A63', courtTint: '#0A2440',
-  line: '#EEF3F8', line2: '#9DB0C6', meta: '#6E839B',
+  ink: '#EEF3F8', line2: '#9DB0C6', meta: '#6E839B',
   ball: '#DCF24B', ballInk: '#DCF24B', onCourt: '#EEF3F8',
 }
 const DAY = {
   surround: '#EAEDF1', court: '#1F5A93', courtTint: '#3E7CB8',
-  line: '#0C1A2A', line2: '#3C4E63', meta: '#56677D',
+  ink: '#0C1A2A', line2: '#3C4E63', meta: '#56677D',
   ball: '#DCF24B', ballInk: '#55670A', onCourt: '#F7F9FB',
 }
 
@@ -130,7 +131,7 @@ async function palette(page: import('@playwright/test').Page, theme: 'night' | '
     const read = (n: string) => s.getPropertyValue(n).trim()
     return {
       surround: read('--surround'), court: read('--court'), courtTint: read('--court-tint'),
-      line: read('--line'), line2: read('--line-2'), meta: read('--meta'),
+      ink: read('--ink'), line2: read('--line-2'), meta: read('--meta'),
       ball: read('--ball'), ballInk: read('--ball-ink'), onCourt: read('--on-court'),
     }
   })
@@ -150,7 +151,7 @@ for (const [name, p] of [['night', NIGHT], ['day', DAY]] as const) {
       ['line-2 on surround', p.line2, p.surround],
       ['meta on surround', p.meta, p.surround],
       ['ball-ink on surround', p.ballInk, p.surround],
-      ['line on surround', p.line, p.surround],
+      ['ink on surround', p.ink, p.surround],
       ['on-court on court', p.onCourt, p.court],
     ]
     for (const [label, fg, bg] of pairs) {
@@ -217,7 +218,7 @@ Insert **above** the existing `:root` block, leaving the current `--fg*`, `--bg`
   --surround:    #060A11;
   --court:       #0F3A63;
   --court-tint:  #0A2440;
-  --line:        #EEF3F8;
+  --ink:        #EEF3F8;
   --line-2:      #9DB0C6;
   --meta:        #6E839B;
   --ball:        #DCF24B;
@@ -233,7 +234,7 @@ Insert **above** the existing `:root` block, leaving the current `--fg*`, `--bg`
   --surround:    #EAEDF1;
   --court:       #1F5A93;
   --court-tint:  #3E7CB8;
-  --line:        #0C1A2A;
+  --ink:        #0C1A2A;
   --line-2:      #3C4E63;
   --meta:        #56677D;
   --ball:        #DCF24B;
@@ -653,7 +654,7 @@ The load sequence is pure CSS `animation-delay`, so `Hero` ships no JavaScript.
   line-height: var(--lh-hero);
   letter-spacing: var(--ls-hero);
   text-transform: uppercase;
-  color: var(--line);
+  color: var(--ink);
   margin: 0;
   text-wrap: balance;
 }
@@ -674,7 +675,7 @@ The load sequence is pure CSS `animation-delay`, so `Hero` ships no JavaScript.
   max-width: 46ch;
 }
 
-.role strong { color: var(--line); font-weight: 600; }
+.role strong { color: var(--ink); font-weight: 600; }
 
 .cue {
   font-family: var(--font-mono);
@@ -1042,7 +1043,7 @@ Expected: FAIL — no `rail` element.
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: -.01em;
-  color: var(--line);
+  color: var(--ink);
 }
 
 .nav { display: flex; flex-direction: column; gap: var(--s-3); }
@@ -1067,7 +1068,7 @@ Expected: FAIL — no `rail` element.
 }
 
 .tick:hover,
-.tick[aria-current='true'] { color: var(--line); }
+.tick[aria-current='true'] { color: var(--ink); }
 
 .tick[aria-current='true']::before { width: 26px; background: var(--ball); }
 
@@ -1076,13 +1077,13 @@ Expected: FAIL — no `rail` element.
 .email {
   font-family: var(--font-mono);
   font-size: var(--t-meta);
-  color: var(--line);
+  color: var(--ink);
   word-break: break-all;
 }
 
 .links { display: flex; flex-wrap: wrap; gap: var(--s-3); font-size: 13px; }
 .link { color: var(--meta); transition: color var(--dur-hover) var(--ease-cut); }
-.link:hover { color: var(--line); }
+.link:hover { color: var(--ink); }
 
 /* ---- Bottom bar below 1024px ---- */
 @media (max-width: 1023px) {
@@ -1336,7 +1337,7 @@ Replace `components/Experience.module.css`:
   font-variation-settings: 'wght' 700;
   font-size: var(--t-h3);
   line-height: var(--lh-h3);
-  color: var(--line);
+  color: var(--ink);
   margin: 0;
 }
 
@@ -1452,7 +1453,7 @@ Expected: FAIL — no `data-project` attribute.
   font-variation-settings: 'wght' 700;
   font-size: var(--t-h4);
   line-height: var(--lh-h4);
-  color: var(--line);
+  color: var(--ink);
 }
 
 .status {
@@ -1573,7 +1574,7 @@ Only colour, type and spacing tokens change. The lead/rest structure, the traili
   font-size: var(--t-h3);
   line-height: var(--lh-h3);
   letter-spacing: -.01em;
-  color: var(--line);
+  color: var(--ink);
 }
 
 .lead li:not(:last-child) {
