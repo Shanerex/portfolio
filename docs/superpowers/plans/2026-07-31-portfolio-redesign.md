@@ -16,7 +16,7 @@
 - **No images.** `public/` stays empty. Floodlight, court lines and all ornament are CSS or inline SVG.
 - **Every component is a server component** except `ThemeToggle` and `ScrollEffects`.
 - **`content.ts` is the only file holding copy.** Tests derive assertions from it; never hardcode content strings in tests.
-- **Abstraction rule (absolute):** no tennis vocabulary, iconography or match-play language in any user-visible string. Court geometry, colour and light only. Internal CSS class and token names may reference the court.
+- **Abstraction rule:** no tennis vocabulary, iconography or match-play language in any user-visible string. Court geometry, colour and light only. Internal CSS class and token names may reference the court. **One explicit, deliberate exception:** the theme toggle's visible label and accessible name read "Night match" / "Day match" (Task 6) — resolved with the human partner during planning. This is the sole place the word "match" may appear as user-visible text; it must not spread to any other string.
 - **Theme attribute values are `night` and `day`** on `<html data-theme>`, persisted to `localStorage` under `srs-theme`. Legacy values `dark`/`light` migrate to `night`/`day`.
 - **Night is the first-visit default,** unconditionally. The OS `prefers-color-scheme` is not consulted.
 - **Accessibility floor:** zero axe violations in both themes, visible keyboard focus, `prefers-reduced-motion` fully respected, interactive targets ≥44px.
