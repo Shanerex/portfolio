@@ -1399,6 +1399,123 @@ git commit -m "feat: restyle intro and experience onto the court grid"
 
 ---
 
+### Task 7b: Migrate body's base styles off the legacy tokens
+
+**Inserted during execution, not in the original plan.** Task 7's implementer discovered — and the controller confirmed with a real screenshot — that `body`'s own base rule in `app/globals.css` (`background: var(--bg); color: var(--fg);`, plus the `--line-faint` texture) still points at the legacy token system. Since Task 6 permanently changed `data-theme`'s value space to `night`/`day`, the legacy block's only remaining match is its bare `:root` fallback, which supplies the **light-theme** legacy values unconditionally — `body`'s background is now stuck at `#faf9f7` regardless of the active theme. Hero and Experience (Tasks 4 and 7) already render text in the new `--ink` token, which in night theme is near-white (`#EEF3F8`) — near-white text on a near-white body background is effectively invisible. A screenshot of the live night-theme page confirmed the hero thesis is a barely-visible ghost.
+
+This is a plan gap, not an implementer error: no task was ever written to migrate `body`'s own declaration, only component-level CSS. The original plan implicitly assumed this fell under Task 12's cleanup, but leaving it that long means the site's default (night) theme renders its most prominent content — the full-viewport hero — unreadable for the entire Tasks 7–11 window. Fixing it now instead trades that for a smaller, self-healing cost: Projects, Skills and About (not yet migrated) will render their own explicit legacy-token colors against the new background until Tasks 8, 9 and 10 — already next in sequence — migrate them, exactly as planned. Net effect: the most visible content (hero, first impression) becomes correct now; the least visible content (below-the-fold, not-yet-migrated sections) stays exactly as imperfect as it already was, for no longer than originally scheduled.
+
+**Files:**
+- Modify: `app/globals.css`
+- Test: `tests/tokens.spec.ts`
+
+**Interfaces:**
+- Consumes: `--surround`, `--ink` (Task 1).
+- Produces: nothing new — no other task depends on this one by name.
+
+- [ ] **Step 1: Write the failing test**
+
+Add to `tests/tokens.spec.ts`:
+
+```ts
+test('body background and text color follow the active theme, not the legacy light default', async ({ page }) => {
+  await page.goto('/')
+  for (const theme of ['night', 'day'] as const) {
+    await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
+    const [bodyBg, bodyColor, tokenBg, tokenInk] = await page.evaluate(() => {
+      const bodyStyle = getComputedStyle(document.body)
+      const rootStyle = getComputedStyle(document.documentElement)
+      return [
+        bodyStyle.backgroundColor,
+        bodyStyle.color,
+        rootStyle.getPropertyValue('--surround').trim(),
+        rootStyle.getPropertyValue('--ink').trim(),
+      ]
+    })
+    // Convert the token hex values the same way the browser reports computed color
+    const hexToRgb = (hex: string) => {
+      const n = hex.replace('#', '')
+      const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16))
+      return `rgb(${r}, ${g}, ${b})`
+    }
+    expect(bodyBg, `${theme}: body background`).toBe(hexToRgb(tokenBg))
+    expect(bodyColor, `${theme}: body color`).toBe(hexToRgb(tokenInk))
+  }
+})
+```
+
+- [ ] **Step 2: Run to verify it fails**
+
+Run: `npx playwright test tests/tokens.spec.ts -g "body background" --reporter=line`
+Expected: FAIL — body's computed background/color are the legacy light values (`rgb(250, 249, 247)` / legacy `--fg`) regardless of the `data-theme` attribute set.
+
+- [ ] **Step 3: Migrate body's base rule in `app/globals.css`**
+
+Change only the three legacy references in the base `body` rule — leave every other declaration (font, transition, padding, the rail-space-reservation rules immediately below) untouched:
+
+```css
+body {
+  margin: 0;
+  background: var(--surround);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--rule) 0px,
+    var(--rule) 1px,
+    transparent 1px,
+    transparent 88px
+  );
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
+}
+```
+
+`--rule` (defined in Task 1, used already by `CourtLines` for the hairline texture) replaces `--line-faint` as the ambient texture colour — both were low-opacity decorative washes, so `--rule` is the correct new-system equivalent, not a value invented for this fix.
+
+Leave `body[data-bg='vignette']` untouched — grep confirms no component ever sets that attribute (`grep -rn "data-bg" app/ components/` returns only this CSS rule), so it's unreachable dead code, not a live bug. Do not migrate or delete it here; it's an existing cleanup candidate for Task 12, out of scope for this fix.
+
+- [ ] **Step 4: Run the test**
+
+Run: `npx playwright test tests/tokens.spec.ts -g "body background" --reporter=line`
+Expected: PASS
+
+- [ ] **Step 5: Run the full suite**
+
+Run: `npm test`
+Expected: PASS. If any not-yet-migrated section's test starts failing because of a contrast/visibility assertion, that is expected fallout from this fix landing ahead of that section's own migration task — do not attempt to fix Projects/Skills/About's own colors here; report it instead so the controller can confirm it's the anticipated, self-healing trade-off described above rather than a new defect.
+
+- [ ] **Step 6: Take a full-page screenshot in night theme and visually confirm the hero is now readable**
+
+This fix exists because an automated test suite did not catch the original bug — confirm the fix the same way the bug was found:
+
+```bash
+node -e "
+const {chromium} = require('@playwright/test');
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({viewport:{width:1440,height:900}});
+  await p.addInitScript(() => localStorage.setItem('srs-theme','night'));
+  await p.goto('http://localhost:3000', {waitUntil:'networkidle'});
+  await p.screenshot({path:'/tmp/night-after-fix.png', fullPage:false});
+  await b.close();
+})();
+"
+```
+
+(Requires the dev server running at localhost:3000.) Report whether the hero thesis is now clearly legible.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add app/globals.css tests/tokens.spec.ts
+git commit -m "fix: migrate body's background and text color off the legacy light default"
+```
+
+---
+
 ### Task 8: Projects
 
 **Files:**
