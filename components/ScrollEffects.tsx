@@ -62,13 +62,17 @@ export default function ScrollEffects() {
 
     // Scroll-spy. Classes are toggled on the DOM directly rather than lifted
     // into React state, so Sidebar stays a server component.
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>('main section[id]'),
-    )
     const navLinks = new Map<string, HTMLAnchorElement>()
     document
       .querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]')
       .forEach((a) => navLinks.set(a.getAttribute('href')!.slice(1), a))
+    // Only sections with a corresponding nav entry participate in scroll-spy.
+    // Contact (added after About) is a closing section with no nav link, so
+    // it must never be treated as the "last section" for spy/bottom-fallback
+    // purposes — doing so would strand aria-current with no matching link.
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>('main section[id]'),
+    ).filter((s) => navLinks.has(s.id))
 
     const setActive = (id: string) => {
       navLinks.forEach((link, key) => {

@@ -1,24 +1,7 @@
 .body {
-  font-size: var(--text-body-lg);
-  line-height: var(--lh-body-lg);
-  color: var(--fg2);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--line-2);
   text-wrap: pretty;
   margin: 0;
-}
-
-.email {
-  display: inline-block;
-  margin-top: var(--sp-8);
-  font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1;
-  color: var(--fg);
-  border-bottom: 1px solid var(--line2);
-  padding-bottom: 4px;
-  transition: border-color var(--dur-hover) ease;
-}
-
-.email:hover {
-  border-color: var(--fg);
-  color: var(--fg);
 }

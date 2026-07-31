@@ -130,13 +130,20 @@ test('each group splits into its lead skills and the rest', async ({ page }) => 
   }
 })
 
-test('about renders the paragraph and the email link', async ({ page }) => {
+test('about renders the paragraph', async ({ page }) => {
   await page.goto('/')
   const section = page.locator('section#about')
   await expect(section.locator('p')).toHaveText(about)
-  const email = section.locator('a[href^="mailto:"]')
-  await expect(email).toHaveText(`${site.email} →`)
-  await expect(email).toHaveAttribute('href', `mailto:${site.email}`)
+})
+
+test('contact closes the page with the email at display size', async ({ page }) => {
+  await page.goto('/')
+  const contact = page.locator('section#contact')
+  const email = contact.locator('a[href^="mailto:"]')
+  await expect(email).toHaveCount(1)
+  const size = await email.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+  expect(size).toBeGreaterThanOrEqual(28)
+  await expect(contact).toContainText(site.availability)
 })
 
 test('thesis is a single short line and no longer duplicated in the lede', () => {
