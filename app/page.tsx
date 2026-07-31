@@ -1,4 +1,4 @@
-import Sidebar from '@/components/Sidebar'
+import Rail from '@/components/Rail'
 import Experience from '@/components/Experience'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="page">
       <CourtLines />
-      <Sidebar />
+      <Rail />
       <main className="content">
         <Hero />
         <ImpactBand />

@@ -30,16 +30,17 @@ export const metadata: Metadata = {
 }
 
 const themeScript = `
-(function(){
+(function () {
   try {
-    var k = 'srs-theme';
-    var stored = localStorage.getItem(k);
-    var t = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t);
+    var stored = localStorage.getItem('srs-theme')
+    if (stored === 'light') stored = 'day'
+    if (stored === 'dark') stored = 'night'
+    var theme = stored === 'day' || stored === 'night' ? stored : 'night'
+    document.documentElement.setAttribute('data-theme', theme)
   } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'night')
   }
-})();
+})()
 `
 
 export default function RootLayout({

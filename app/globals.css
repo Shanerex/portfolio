@@ -169,6 +169,13 @@ body[data-bg='vignette'] {
   background-image: radial-gradient(ellipse 1000px 560px at 28% -6%, var(--panel), transparent 70%);
 }
 
+/* ---------- Rail space reservation ---------- */
+body { padding-bottom: 56px; }
+
+@media (min-width: 1024px) {
+  body { padding-bottom: 0; padding-left: var(--rail-w); }
+}
+
 a { color: var(--fg); text-decoration: none; }
 a:hover { color: var(--fg2); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
@@ -236,6 +243,13 @@ html {
 }
 
 .content {
+  /* Rail (unlike the old Sidebar) is position: fixed, so it no longer
+     occupies the first grid track as an in-flow item — .content is left
+     as the sole in-flow item in .page and would otherwise be auto-placed
+     into that leftover var(--sidebar-w) column alone. Span both tracks so
+     it uses the full width; the rail's own space is reserved separately
+     via body padding-left (see "Rail space reservation" above). */
+  grid-column: 1 / -1;
   position: relative;
   z-index: 1;
   padding: var(--content-pad);

@@ -21,10 +21,11 @@ test('collapses to one column below 1024px', async ({ page }) => {
     .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
   expect(cols.split(' ').length).toBe(1)
 
-  const position = await page
-    .locator('aside.sidebar')
-    .evaluate((el) => getComputedStyle(el).position)
-  expect(position).not.toBe('sticky')
+  // Below 1024px the rail becomes a bottom bar rather than a sticky left
+  // column — it must stay visible and reachable regardless.
+  const rail = page.locator('[data-testid="rail"]')
+  await expect(rail).toBeVisible()
+  await expect(rail.locator('a[href^="mailto:"]')).toBeVisible()
 })
 
 test('stays two columns at 1024px and above', async ({ page }) => {

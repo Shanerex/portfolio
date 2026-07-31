@@ -1,0 +1,85 @@
+.rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--rail-w);
+  z-index: 3;
+  box-sizing: border-box;
+  padding: var(--s-5) var(--s-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-5);
+  border-right: 1px solid var(--rule);
+  background: var(--surround);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-variation-settings: 'wght' 800;
+  font-size: 15px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+.nav { display: flex; flex-direction: column; gap: var(--s-3); }
+
+.tick {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  color: var(--meta);
+  transition: color var(--dur-hover) var(--ease-cut);
+}
+
+.tick::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--rule-strong);
+  flex: none;
+  transition: width var(--dur-hover) var(--ease-cut), background var(--dur-hover) var(--ease-cut);
+}
+
+.tick:hover,
+.tick[aria-current='true'] { color: var(--ink); }
+
+.tick[aria-current='true']::before { width: 26px; background: var(--ball); }
+
+.foot { display: flex; flex-direction: column; gap: var(--s-3); }
+
+.email {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.links { display: flex; flex-wrap: wrap; gap: var(--s-3); font-size: 13px; }
+.link { color: var(--meta); transition: color var(--dur-hover) var(--ease-cut); }
+.link:hover { color: var(--ink); }
+
+/* ---- Bottom bar below 1024px ---- */
+@media (max-width: 1023px) {
+  .rail {
+    top: auto;
+    right: 0;
+    width: auto;
+    height: 56px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--gutter);
+    border-right: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .nav, .name, .links { display: none; }
+  .foot { flex-direction: row; align-items: center; gap: var(--s-4); }
+  .email { min-height: 44px; display: inline-flex; align-items: center; }
+}

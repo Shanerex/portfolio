@@ -46,5 +46,5 @@ test('theme toggle exposes an accessible name that describes the action', async 
 }) => {
   await page.goto('/')
   const button = page.getByRole('button')
-  await expect(button).toHaveAttribute('aria-label', /switch to (light|dark) theme/i)
+  await expect(button).toHaveAttribute('aria-label', /switch to (day|night) match/i)
 })
