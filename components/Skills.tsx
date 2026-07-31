@@ -4,9 +4,9 @@ import styles from './Skills.module.css'
 
 export default function Skills() {
   return (
-    <section id="skills" className="section">
+    <section id="skills" className="section court">
       <SectionLabel>Skills</SectionLabel>
-      <div className={styles.groups}>
+      <div className={`singles ${styles.groups}`}>
         {skills.map((group, i) => {
           const lead = group.items.slice(0, group.lead)
           const rest = group.items.slice(group.lead)
