@@ -2027,26 +2027,140 @@ grep -rn "page.module" app components || echo "no references"
 git rm app/page.module.css
 ```
 
-- [ ] **Step 4: Remove the legacy token block**
+**Correction, made before dispatch.** The original version of this step under-specified what "remove the legacy token block" actually requires. A controller audit — grepping every legacy token's real usage across the codebase, not just pattern-matching names — found three things the original wording would have gotten wrong if followed literally:
 
-Delete the old `--bg`, `--panel`, `--fg`, `--fg2`, `--fg3`, `--fg4`, `--fg5`, `--line`, `--line2`, `--hover`, `--accent`, `--line-faint` declarations and the old `--text-*`, `--sp-*`, `--sidebar-w`, `--content-*`, `--radius-*`, `--ease-out`, `--dur-reveal*`, `--reveal-offset` tokens from `app/globals.css`, plus the retired `.lede`, `.section`, `.sidebar`, `.page` rules and the old body background texture. Mirror the deletion in `design/tokens.css`.
+1. **`--font-display`, `--font-body`, `--font-mono` live inside the "legacy" `:root` block but have no new-system equivalent anywhere** — they're the actual bindings to the self-hosted Google Fonts CSS variables, used by 6+ components (`--font-mono` alone has 15 call sites). Deleting them wholesale would silently fall every typeface back to `system-ui`. They must be relocated into the new base `:root` block, not deleted.
+2. **`--radius-pill` has the same problem** — `components/ThemeToggle.module.css` uses it twice (the pill-shaped toggle button), and its only definition is in the legacy block about to be removed. Must be relocated, not deleted.
+3. **`.content`'s own `max-width: var(--content-max)` (720px) and `padding: var(--content-pad)` are a live, currently-shipping bug**, not dead weight. A controller screenshot check confirmed `.content` is genuinely rendering at 832px wide on a 1440px viewport with ~1276px available after the rail — every `.court` section inside it (Hero's impact stats, the deuce/ad project alternation, the full-bleed contact close) has been clipped to that narrow width since Task 2 landed, because nothing ever told `.content` to stop constraining itself once `.court` took over that job internally. This is the single highest-impact fix left in the whole plan — it's why the redesign hasn't been rendering at its intended width this entire time.
 
-- [ ] **Step 5: Verify nothing references a removed token**
+Most of the remaining legacy tokens (`--lh-lede`, `--lh-h3`, `--lh-h4`, `--lh-body`, `--lh-sm`, `--ls-label`, `--dur-hover`, `--dur-theme`) turn out to be **self-resolving**: the new system already defines a token of the identical name (Task 1), and the legacy duplicate has simply been winning the cascade by source order this whole time (the exact pattern Tasks 6, 7 and 7b's reviews already flagged and deferred to this task). Deleting the legacy duplicate is enough — no component code changes.
 
-```bash
-grep -rnE "var\(--(fg[2-5]?|bg|panel|line2|hover|accent|line-faint|sp-[0-9]+|text-[a-z0-9-]+|radius-[a-z]+|dur-reveal|reveal-offset|ease-out|sidebar-w|content-max)\)" app components || echo "clean"
+- [ ] **Step 4: Relocate the still-needed tokens into the new system**
+
+In `app/globals.css`, add to the **new** base `:root` block (Task 1's, the one with `--rail-w` etc. — not the legacy one):
+
+```css
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --radius-pill: 99px;
 ```
 
-Expected: `clean`. Fix any hit before continuing.
+- [ ] **Step 5: Fix `.content` — the real layout bug**
 
-- [ ] **Step 6: Run axe against both themes**
+Replace the `.content` rule (currently `grid-column: 1 / -1; position: relative; z-index: 1; padding: var(--content-pad); max-width: var(--content-max);`) with:
+
+```css
+.content {
+  position: relative;
+  z-index: 1;
+}
+```
+
+`.court` (already present in every section, already responsive at 1023px/767px) is now the sole authority on width and side gutters — `.content` no longer needs `max-width`, `padding`, or `grid-column` at all. Also delete `.content`'s two responsive overrides in the tablet (`max-width: 1023px`) and mobile (`max-width: 767px`) media queries entirely — both existed only to adjust the same now-removed `padding`/`max-width`/`margin`, and `.court`'s own breakpoints already cover this.
+
+- [ ] **Step 6: Migrate the still-live global rules off legacy tokens**
+
+- `.section` (margin-top/padding-top/border-top rhythm between content sections — still used by Experience, Projects, Skills, About): change `margin-top: var(--sp-13)` → `margin-top: var(--s-9)`, `padding-top: var(--sp-12)` → `padding-top: var(--s-7)`, `border-top: 1px solid var(--line)` → `border-top: 1px solid var(--rule-strong)`.
+- `a { color: var(--fg); }` / `a:hover { color: var(--fg2); }` → `var(--ink)` / `var(--line-2)`.
+- `:focus-visible { outline: 2px solid var(--fg4); }` → `var(--ink)`. Do **not** use `--ball` here even though it's the site's accent colour — the Task 1 contrast table shows `--ball` on the day theme's `--surround` is ~1.1:1, which would make focus rings nearly invisible for keyboard users in day match. `--ink` clears AA against `--surround` in both themes.
+
+- [ ] **Step 7: Delete the dead scaffold**
+
+`app/page.module.css` is `create-next-app` leftover and is imported by nothing. Confirm, then remove:
+
+```bash
+grep -rn "page.module" app components || echo "no references"
+git rm app/page.module.css
+```
+
+- [ ] **Step 8: Delete confirmed-dead rules and the legacy token block**
+
+Delete entirely:
+- The global `.label` rule — dead since Task 7 (`SectionLabel` uses its own CSS Module, never the global class). Confirm with `grep -rn '"label"' app components | grep -v module.css` before deleting.
+- `.sidebar` and both of its responsive sub-rules (1023px and 767px breakpoints) — dead since Task 6 replaced it with `Rail`.
+- `.page`'s `display: grid; grid-template-columns: var(--sidebar-w) 1fr;` — `Rail` is `position: fixed` (out of grid flow) and `.content` no longer participates in a grid either (Step 5), so `.page` has nothing left to grid. Reduce `.page` to no declared layout rules (or remove the rule entirely if it becomes empty — check whether `align-items: start` is still doing anything for any remaining child; if not, drop it too).
+- `body[data-bg='vignette']` — confirmed unreachable; no component ever sets that attribute (`grep -rn "data-bg" app components` returns only this CSS rule).
+- The entire legacy `:root, [data-theme='light']` block, the entire `[data-theme='dark']` block, and the entire legacy base `:root { /* Typography */ ... /* Motion */ }` block — now safe to remove wholesale, since Steps 4-6 already relocated or repointed everything still actually consumed.
+- The `--line-faint` texture reference was already migrated off in Task 7b; nothing further to do there.
+
+Mirror every deletion (and the Step 4 relocations) in `design/tokens.css`.
+
+- [ ] **Step 9: Verify nothing references a removed token — with a script, not a hand-typed regex**
+
+A hand-enumerated grep pattern is exactly how the original version of this step missed `--font-*`/`--radius-pill`/`--content-max`/`--content-pad` in the first place. Instead, diff every `var(--x)` actually used in the codebase against every `--x:` still defined:
+
+```bash
+node -e "
+const { execSync } = require('child_process');
+const fs = require('fs');
+const files = execSync('grep -rl \"var(--\" app components --include=*.css --include=*.tsx').toString().trim().split('\n');
+const used = new Set();
+for (const f of files) {
+  const text = fs.readFileSync(f, 'utf8');
+  for (const m of text.matchAll(/var\(\s*(--[a-zA-Z0-9-]+)/g)) used.add(m[1]);
+}
+const globalsCss = fs.readFileSync('app/globals.css', 'utf8');
+const defined = new Set([...globalsCss.matchAll(/^\s*(--[a-zA-Z0-9-]+)\s*:/gm)].map((m) => m[1]));
+const missing = [...used].filter((t) => !defined.has(t));
+if (missing.length) {
+  console.log('UNDEFINED TOKENS STILL REFERENCED:', missing);
+  process.exit(1);
+}
+console.log('clean —', used.size, 'tokens used, all defined');
+"
+```
+
+Expected: `clean`. Fix any hit before continuing — each one is either a token that needs relocating (like Step 4) or a component still pointing at an old name that needs repointing to its new-system equivalent.
+
+- [ ] **Step 10: Fix the one pre-existing test this work invalidates**
+
+`tests/tokens.spec.ts` has a test named `'page uses the two-column grid at desktop width'` asserting `.page`'s computed `gridTemplateColumns` starts with `'340px'` — a leftover from the original single-sidebar layout, already vestigial since Task 6 and now meaningless once Step 8 removes `.page`'s grid entirely. Replace it with a test that reflects what's actually true post-redesign:
+
+```ts
+test('content clears the fixed rail at desktop width', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const rail = await page.locator('[data-testid="rail"]').boundingBox()
+  const content = await page.locator('main.content').boundingBox()
+  expect(content!.x).toBeGreaterThanOrEqual(rail!.x + rail!.width)
+})
+```
+
+- [ ] **Step 11: Run to verify the responsive test still passes and check for overflow**
+
+Run: `npx playwright test tests/responsive.spec.ts tests/tokens.spec.ts --reporter=line`
+Expected: PASS. If `.content`'s width change (Step 5) introduces horizontal overflow at any of the three widths, fix the CSS — do not weaken the test.
+
+- [ ] **Step 12: Take before/after screenshots confirming `.content` now renders at its intended width**
+
+This is the same class of bug as Task 7b (a real visual defect no automated test was checking) — confirm the fix the same way: start the dev server, screenshot the desktop hero/impact-band area, and directly measure `.content`'s rendered width:
+
+```bash
+node -e "
+const {chromium} = require('@playwright/test');
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({viewport:{width:1440,height:900}});
+  await p.goto('http://localhost:3000', {waitUntil:'networkidle'});
+  const width = await p.evaluate(() => document.querySelector('main.content').getBoundingClientRect().width);
+  console.log('content width:', width, '(was 832px before this task; --page-max is 1280px)');
+  await p.screenshot({path:'/tmp/task12-after.png', fullPage:false});
+  await b.close();
+})();
+"
+```
+
+(Requires the dev server running at localhost:3000.) Report the measured width and whether the impact band / court sections now visibly use much more of the available viewport.
+
+- [ ] **Step 13: Run axe against both themes**
 
 Confirm `tests/a11y.spec.ts` sets `data-theme` to `night` and `day` rather than `dark`/`light`, then run:
 
 Run: `npx playwright test tests/a11y.spec.ts --reporter=line`
-Expected: PASS — zero violations in both themes.
+Expected: PASS — zero violations in both themes. Pay particular attention to the `:focus-visible` change (Step 6) — confirm it doesn't introduce a new violation.
 
-- [ ] **Step 7: Run the full suite and a production build**
+- [ ] **Step 14: Run the full suite and a production build**
 
 ```bash
 npm test
@@ -2055,11 +2169,11 @@ npm run build
 
 Expected: all tests pass; build completes and emits the static export.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 15: Commit**
 
 ```bash
 git add -A
-git commit -m "chore: remove the retired token system and dead scaffold"
+git commit -m "chore: remove the retired token system, fix .content's clipped width, and dead scaffold"
 ```
 
 ---
