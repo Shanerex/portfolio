@@ -412,7 +412,13 @@ export type ExperienceEntry = {
   company: string
   bullets: string[]
 }
-export type Project = { name: string; stack: string; description: string; href: string }
+export type Project = {
+  name: string
+  stack: string
+  status?: 'in-progress' | 'completed'
+  description: string
+  href: string
+}
 ```
 
 - [ ] **Step 1: Create `content.ts`**
@@ -432,6 +438,7 @@ export type ExperienceEntry = {
 export type Project = {
   name: string
   stack: string
+  status?: 'in-progress' | 'completed'
   description: string
   href: string
 }
@@ -441,7 +448,7 @@ export const site = {
   blurb:
     'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
   lede:
-    'Three years building distributed services that stay up: streaming pipelines, transaction engines and zero-downtime migrations. I own what I ship — design doc through production incident.',
+    "Three years building backend systems at Bounteous x Accolite: a Pub/Sub pipeline moving 300,000+ requests a day, a credit engine that's carried 3M+ transactions without losing one. I own what I ship past the deploy, through the incident that finds the edge case nobody spec'd.",
   location: 'Bengaluru, India',
   availability: 'Open to new roles',
   email: 'shanerexsasikumar@gmail.com',
@@ -451,10 +458,10 @@ export const site = {
     { label: 'Skills', href: '#skills' },
     { label: 'About', href: '#about' },
   ] satisfies Link[],
-  // TODO(shane): replace the two placeholder URLs below before launch.
   links: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shanerexsasikumar' },
-    { label: 'GitHub', href: 'https://github.com/shanerex' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shane-rex-sasikumar' },
+    { label: 'GitHub', href: 'https://github.com/Shanerex' },
+    // TODO(shane): no cv.pdf exists yet anywhere in career/ or Projects/ — export one into public/.
     { label: 'CV', href: '/cv.pdf' },
   ] satisfies Link[],
 }
@@ -465,10 +472,11 @@ export const experience: ExperienceEntry[] = [
     dates: '2025 — Present',
     company: 'Bounteous x Accolite',
     bullets: [
-      'Pub/Sub pipeline for 20+ event types — 300,000+ requests a day at 99.99% delivery.',
-      'Order history responses from 6-8s to under 1s via a Beam-fed pre-aggregated store.',
-      '400,000+ customer records migrated with zero downtime and no data loss.',
-      'Spec-driven workflow adopted team-wide; 30-50% faster than estimates.',
+      'Architected a GCP Pub/Sub pipeline ingesting 20+ webhook event types, handling 300,000+ requests a day at 99.99% delivery.',
+      'Cut order history API response times from 6-8s to under 1s with a Dataflow/Beam pipeline feeding a pre-aggregated store.',
+      'Migrated 400,000+ customer records to a new platform on Spring Boot, Cloud Run and Redis, with zero downtime and no data loss.',
+      'Reconciled 35,000 incorrect debits and restored 20,000 missing credits after a production data-integrity incident, zero customer escalations.',
+      'Introduced Spec Driven Development team-wide, cutting development time 30-50% against estimates.',
     ],
   },
   {
@@ -476,36 +484,39 @@ export const experience: ExperienceEntry[] = [
     dates: '2023 — 2025',
     company: 'Bounteous x Accolite',
     bullets: [
-      'Credit management system built from scratch; 3M+ transactions migrated live.',
-      'Fixed a registration race handing out duplicate customer numbers.',
-      'NiFi ingestion pipeline replacing 100+ manual hours a month.',
-      'JUnit coverage 75% → 90%; Cloud Monitoring dashboards and alerting.',
+      'Built a credit management system from scratch on Spring Boot and Cloud SQL, migrating 3M+ historical transactions with zero downtime.',
+      'Fixed a concurrency race handing out duplicate customer numbers at registration by wrapping generation in a Firestore transaction.',
+      'Automated inventory ingestion with Apache NiFi, cutting 100+ hours of manual work a month.',
+      'Raised JUnit 5 coverage from 75% to 88% with parameterized tests and mocking, cutting CI regression failures.',
+      'Built GCP Cloud Monitoring dashboards and multi-threshold alerting across Cloud Run services, improving MTTR.',
     ],
   },
 ]
 
-// TODO(shane): replace the three placeholder repo URLs before launch.
 export const projects: Project[] = [
-  {
-    name: 'file-upload-sdd',
-    stack: 'Spring Boot 4 · GCS',
-    description:
-      'Five endpoints, five spec folders. Every feature specified before it was written.',
-    href: 'https://github.com/shanerex/file-upload-sdd',
-  },
   {
     name: 'alef-jasper-rebuild',
     stack: 'Next.js · Spring AI',
+    status: 'in-progress',
     description:
-      'Full-stack rebuild with an AI RFQ concierge, running entirely on local infrastructure.',
-    href: 'https://github.com/shanerex/alef-jasper-rebuild',
+      'Full-stack rebuild for a GCC rebar-detailing consultancy, still in progress. Marketing pages, portfolio filtering and an admin portal already ship; the AI RFQ concierge comes next.',
+    href: 'https://github.com/Shanerex/alef-jasper-rebuild',
   },
   {
-    name: 'concurrency-client-server',
-    stack: 'Java · Threads',
+    name: 'CryptoUIJC',
+    stack: 'Kotlin · Jetpack Compose',
+    status: 'completed',
     description:
-      'Thread pools, backpressure and graceful shutdown, learned by building them.',
-    href: 'https://github.com/shanerex/concurrency-client-server',
+      'Android crypto trading app UI: portfolio, live prices, trade and transaction screens, built entirely in Jetpack Compose.',
+    href: 'https://github.com/Shanerex/CryptoUIJC',
+  },
+  {
+    name: 'resume-refresh',
+    stack: 'Claude Code · Python',
+    status: 'completed',
+    description:
+      "A Claude Code plugin that roasts a resume for real weaknesses and rewrites what's actually wrong, then pushes the same content to LinkedIn and Naukri every month.",
+    href: 'https://github.com/Shanerex/resume-refresh',
   },
 ]
 
@@ -513,21 +524,38 @@ export const skills: string[] = [
   'Java',
   'Spring Boot',
   'GCP Pub/Sub',
-  'Cloud Run',
-  'Dataflow · Beam',
+  'GCP Dataflow',
+  'Apache Beam',
   'BigQuery',
+  'Cloud Run',
+  'Cloud Tasks',
   'Cloud SQL',
+  'SQL Server',
   'Redis',
   'Firestore',
   'PostgreSQL',
   'Apache NiFi',
+  'Cloud Monitoring',
+  'Event-Driven Architecture',
+  'Hibernate',
+  'JPA',
+  'Cloud Build',
+  'Google Cloud Storage',
+  'Cloud Scheduler',
   'Docker',
+  'MySQL',
+  'Distributed Systems',
+  'Microservices',
+  'System Design',
+  'REST API Design',
+  'Multithreading & Concurrency',
   'JUnit 5',
-  'Distributed systems',
+  'Git',
+  'Apache Maven',
 ]
 
 export const about =
-  'B.E. Computer Science, Thiagarajar College of Engineering — 9.42 CGPA. Off the clock I play tennis (a few tournament wins in school and college), cricket and badminton, and watch plenty more. Weekends go to films with a story worth following, in any language.'
+  "B.E. Computer Science, Thiagarajar College of Engineering, 9.42 CGPA. Off the clock I play tennis (a few tournament wins in school and college), plus cricket and badminton, and watch more of both than I play. Weekends usually go to a film with a story worth following, in any language."
 ```
 
 - [ ] **Step 2: Write the failing test**
@@ -1079,6 +1107,9 @@ test('every project renders and links out safely', async ({ page }) => {
     await expect(row).toContainText(project.name)
     await expect(row).toContainText(project.stack)
     await expect(row).toContainText(project.description)
+    if (project.status === 'in-progress') {
+      await expect(row).toContainText('In progress')
+    }
   }
 })
 
@@ -1267,12 +1298,31 @@ Bullets carry no glyph — separation is the 9px gap, hence `list-style: none`.
   gap: var(--sp-5);
 }
 
+.nameGroup {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
 .name {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-h4);
   line-height: var(--lh-h4);
   color: var(--fg);
+}
+
+.status {
+  display: inline-block;
+  flex: none;
+  padding: 3px 9px;
+  border: 1px solid var(--line2);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--fg5);
 }
 
 .stack {
@@ -1312,7 +1362,12 @@ export default function Projects() {
           rel="noreferrer"
         >
           <div className={styles.header}>
-            <span className={styles.name}>{project.name}</span>
+            <span className={styles.nameGroup}>
+              {project.status === 'in-progress' && (
+                <span className={styles.status}>In progress</span>
+              )}
+              <span className={styles.name}>{project.name}</span>
+            </span>
             <span className={styles.stack}>{project.stack}</span>
           </div>
           <p className={styles.description}>{project.description}</p>
@@ -1322,6 +1377,8 @@ export default function Projects() {
   )
 }
 ```
+
+Only `status: 'in-progress'` renders a pill. `'completed'` is the unmarked default — most projects are finished, so flagging the exception reads cleaner than labeling every row. The pill reuses the skill-chip pattern (bordered, pill radius, mono) rather than introducing a new visual element.
 
 Hover nudges the row right by 8px with no colour change — the `color: inherit` on `:hover` overrides the global `a:hover` rule from `tokens.css`.
 
