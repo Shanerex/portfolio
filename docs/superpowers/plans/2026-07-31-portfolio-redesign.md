@@ -304,10 +304,21 @@ import { test, expect } from '@playwright/test'
 test('the court grid uses real doubles-court proportions', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
-  const cols = await page.locator('.court').first().evaluate(
-    (el) => getComputedStyle(el).gridTemplateColumns,
-  )
-  const widths = cols.split(' ').map(Number)
+  // Task 2 defines `.court` as a reusable grid system; no real content
+  // consumes it yet (that starts with Hero in Task 3). Probe the rule
+  // directly on a throwaway element so this test verifies the grid math
+  // itself, independent of who applies the class.
+  const cols = await page.evaluate(() => {
+    const probe = document.createElement('div')
+    probe.className = 'court'
+    document.body.appendChild(probe)
+    const value = getComputedStyle(probe).gridTemplateColumns
+    probe.remove()
+    return value
+  })
+  // getComputedStyle resolves fr tracks to absolute px strings (e.g. "148px");
+  // Number() rejects the unit suffix and yields NaN, so use parseFloat.
+  const widths = cols.split(' ').map(parseFloat)
   expect(widths).toHaveLength(4)
   // 1fr 3fr 3fr 1fr — the alleys are one third of the service boxes
   expect(widths[1] / widths[0]).toBeCloseTo(3, 1)
@@ -328,7 +339,7 @@ test('court lines render behind content and are decorative', async ({ page }) =>
 - [ ] **Step 2: Run to verify it fails**
 
 Run: `npx playwright test tests/court.spec.ts --reporter=line`
-Expected: FAIL — no `.court` element exists.
+Expected: FAIL — the `.court` rule doesn't exist yet, so the probe's `gridTemplateColumns` doesn't resolve to four tracks.
 
 - [ ] **Step 3: Add the grid to `app/globals.css`**
 
@@ -1944,5 +1955,7 @@ git commit -m "chore: remove the retired token system and dead scaffold"
 - The impact band does not sit on the `.court` grid. Four equal metrics do not divide into `1fr 3fr 3fr 1fr`, so the band matches the court container's width and gutters while using its own four-column grid.
 
 **Two issues found and fixed during this review:** the floodlight and court-line animations — the first two beats of the spec's load sequence — had no implementing step, and Task 5 shipped a wrong code block followed by a correction. Both are resolved above.
+
+**Two more issues found and fixed while implementing Task 2's grid test:** first, the original test located `.court` on the live page (`page.locator('.court').first()`), but Task 2 is deliberately additive-only — no content consumes `.court` until Hero lands in Task 3 — so the locator timed out waiting for an element that doesn't exist yet at this checkpoint. Fixed by having the test create a throwaway probe element, apply `.court` to it, read its computed `gridTemplateColumns`, and remove it — this verifies the grid math itself rather than assuming premature consumption. Second, the test parsed track widths with `cols.split(' ').map(Number)`; `getComputedStyle` resolves `fr` tracks to absolute px strings (e.g. `"148px"`), and `Number("148px")` is `NaN` — only `parseFloat` strips the unit. Fixed by switching to `parseFloat`. Both fixes are reflected in Task 2's Step 1 code above and are test-only; no CSS or component code changed as a result.
 
 **Type consistency.** `Metric` is defined once in Task 3 and consumed by name in Task 5. `site.thesis`, `site.lede`, `site.metrics` are referenced identically across Tasks 3, 4, 5 and 7. `data-testid` values (`court-lines`, `rail`, `intro`, `impact-band`) and `data-nav-tick` / `data-project` attributes are each introduced in one task and consumed by name in later ones. Placement classes `.bleed`/`.singles`/`.deuce`/`.ad` are defined in Task 2 and used unchanged thereafter.
