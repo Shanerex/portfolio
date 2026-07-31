@@ -6,6 +6,7 @@ import About from '@/components/About'
 import ScrollEffects from '@/components/ScrollEffects'
 import CourtLines from '@/components/CourtLines'
 import Hero from '@/components/Hero'
+import ImpactBand from '@/components/ImpactBand'
 import { site } from '@/content'
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
       <Sidebar />
       <main className="content">
         <Hero />
+        <ImpactBand />
         <p className="lede reveal">{site.lede}</p>
         <Experience />
         <Projects />

@@ -195,12 +195,24 @@ html {
 /* ---------- Scroll reveal (JS adds .is-in via IntersectionObserver) ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(var(--reveal-offset));
-  transition: opacity var(--dur-reveal) ease, transform var(--dur-reveal) ease;
+  transform: translateY(10px);
+  transition: opacity var(--dur-cut) var(--ease-cut), transform var(--dur-cut) var(--ease-cut);
 }
 .reveal.is-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Wipe reveal (JS adds .is-in via IntersectionObserver) ---------- */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--dur-wipe) var(--ease-wipe);
+}
+
+.wipe.is-in { clip-path: inset(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wipe { clip-path: none; transition: none; }
 }
 
 /* ---------- Page grid ---------- */

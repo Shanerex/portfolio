@@ -7,7 +7,7 @@ const REVEAL_FAILSAFE_MS = 2000
 export default function ScrollEffects() {
   useEffect(() => {
     const revealTargets = Array.from(
-      document.querySelectorAll<HTMLElement>('.reveal'),
+      document.querySelectorAll<HTMLElement>('.reveal, .wipe'),
     )
 
     // Failsafe reveals skip the fade — by the time this runs, the element
@@ -47,7 +47,16 @@ export default function ScrollEffects() {
           }
         }
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+      // threshold includes 0 alongside the original 0.05: a `.wipe` target's
+      // clip-path collapses its own visible (clipped) area to zero while
+      // hidden, so a >0 threshold can only ever be crossed after the CSS
+      // clip-path has already opened — but that's driven by the very `.is-in`
+      // class this observer is responsible for adding, a deadlock a `.wipe`
+      // element can only ever escape via the 2s failsafe. Threshold 0 fires
+      // on any geometric edge crossing regardless of clipped-area ratio,
+      // breaking that deadlock; 0.05 is kept so plain `.reveal` targets keep
+      // their original 5%-visible trigger point.
+      { rootMargin: '0px 0px -8% 0px', threshold: [0, 0.05] },
     )
     revealTargets.forEach((el) => revealObserver.observe(el))
 

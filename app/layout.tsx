@@ -56,7 +56,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
-          <style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style>
+          <style>{`
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .wipe { clip-path: none !important; }
+  `}</style>
         </noscript>
       </head>
       <body>{children}</body>
