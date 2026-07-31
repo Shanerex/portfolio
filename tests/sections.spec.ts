@@ -113,3 +113,18 @@ test('about renders the paragraph and the email link', async ({ page }) => {
   await expect(email).toHaveText(`${site.email} →`)
   await expect(email).toHaveAttribute('href', `mailto:${site.email}`)
 })
+
+test('thesis is a single short line and no longer duplicated in the lede', () => {
+  expect(site.thesis.length).toBeGreaterThan(0)
+  expect(site.thesis.length).toBeLessThanOrEqual(60)
+  expect(site.lede).not.toContain('last point')
+})
+
+test('every metric figure is a non-empty short string with a label', () => {
+  expect(site.metrics).toHaveLength(4)
+  for (const metric of site.metrics) {
+    expect(metric.figure.length).toBeGreaterThan(0)
+    expect(metric.figure.length).toBeLessThanOrEqual(10)
+    expect(metric.label.length).toBeGreaterThan(0)
+  }
+})

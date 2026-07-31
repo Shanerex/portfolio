@@ -15,14 +15,23 @@ export type Project = {
   href?: string
 }
 
+export type Metric = { figure: string; label: string }
+
 export const site = {
   name: ['Shane Rex', 'Sasikumar'] as const,
+  thesis: 'No dwelling on the last point.',
   blurb:
     'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
   lede:
-    "I'm an engineer who cares as much about how I build as what I ship. By profession I build event-driven backends on Java, Spring Boot and GCP. The rest of my time keeps turning into the same question, answered differently. A rough stretch of AI-assisted coding became a spec-driven workflow, now running across my team. That workflow turned into two side builds of my own: a file upload API and a full site rebuild. Years of competitive tennis taught me the only rule that matters during an outage: no dwelling on the last point, just play the next one.",
+    "I'm an engineer who cares as much about how I build as what I ship. By profession I build event-driven backends on Java, Spring Boot and GCP. The rest of my time keeps turning into the same question, answered differently. A rough stretch of AI-assisted coding became a spec-driven workflow, now running across my team. That workflow turned into two side builds of my own: a file upload API and a full site rebuild.",
   location: 'Bengaluru, India',
   availability: 'Open to new roles',
+  metrics: [
+    { figure: '300K+', label: 'requests a day' },
+    { figure: '99.99%', label: 'delivery reliability' },
+    { figure: '3M+', label: 'records migrated live' },
+    { figure: '6s → 1s', label: 'API response time' },
+  ] satisfies Metric[],
   email: 'shanerexsasikumar@gmail.com',
   nav: [
     { label: 'Experience', href: '#experience' },
