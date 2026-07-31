@@ -1,9 +1,12 @@
 .row {
   display: block;
-  padding: var(--sp-6) 0;
-  border-bottom: 1px solid var(--line);
+  padding: var(--sp-7) 0;
   color: inherit;
   transition: padding-left var(--dur-hover) ease;
+}
+
+.row:first-child {
+  padding-top: 0;
 }
 
 .row:hover {
@@ -18,12 +21,59 @@
   gap: var(--sp-5);
 }
 
+.title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
 .name {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-h4);
   line-height: var(--lh-h4);
   color: var(--fg);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--text-tag);
+  line-height: 1;
+}
+
+.status[data-status='in-progress'] {
+  color: var(--accent);
+}
+
+.status[data-status='completed'] {
+  color: var(--fg4);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.status[data-status='in-progress'] .dot {
+  animation: status-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status[data-status='in-progress'] .dot {
+    animation: none;
+  }
 }
 
 .stack {
@@ -34,11 +84,16 @@
   flex: none;
 }
 
-.description {
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
   font-size: var(--text-sm2);
   line-height: var(--lh-sm2);
   color: var(--fg3);
-  margin: 7px 0 0;
 }
 
 @media (max-width: 767px) {

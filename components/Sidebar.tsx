@@ -1,6 +1,27 @@
 import { site } from '@/content'
 import ThemeToggle from './ThemeToggle'
 import styles from './Sidebar.module.css'
+import {
+  ExperienceIcon,
+  ProjectsIcon,
+  SkillsIcon,
+  AboutIcon,
+  MailIcon,
+  LinkedInIcon,
+  GitHubIcon,
+} from './icons'
+
+const NAV_ICONS: Record<string, React.ReactNode> = {
+  Experience: <ExperienceIcon />,
+  Projects: <ProjectsIcon />,
+  Skills: <SkillsIcon />,
+  About: <AboutIcon />,
+}
+
+const LINK_ICONS: Record<string, React.ReactNode> = {
+  LinkedIn: <LinkedInIcon />,
+  GitHub: <GitHubIcon />,
+}
 
 export default function Sidebar() {
   const [firstName, lastName] = site.name
@@ -24,6 +45,7 @@ export default function Sidebar() {
               className={styles.navLink}
               aria-current={i === 0 ? 'true' : undefined}
             >
+              <span className={styles.navIcon}>{NAV_ICONS[item.label]}</span>
               {item.label}
             </a>
           ))}
@@ -38,6 +60,7 @@ export default function Sidebar() {
         </p>
         <div className={styles.contact}>
           <a className={styles.email} href={`mailto:${site.email}`}>
+            <MailIcon />
             Email
           </a>
           {site.links.map((link) => (
@@ -48,6 +71,7 @@ export default function Sidebar() {
               target="_blank"
               rel="noreferrer"
             >
+              {LINK_ICONS[link.label]}
               {link.label}
             </a>
           ))}

@@ -59,6 +59,8 @@
   --line:  rgba(0, 0, 0, .10);  /* section dividers, sidebar border */
   --line2: rgba(0, 0, 0, .14);  /* chip borders, link underlines */
   --hover: rgba(0, 0, 0, .035); /* optional row hover wash */
+  --accent: #2f7a51;            /* signal green — metrics, live status only (AA @ 5.2:1 on --bg) */
+  --line-faint: rgba(0, 0, 0, .045); /* ambient background texture only, never dividers */
 }
 
 /* ---------- Dark theme ---------- */
@@ -74,12 +76,21 @@
   --line:  rgba(255, 255, 255, .09);
   --line2: rgba(255, 255, 255, .14);
   --hover: rgba(255, 255, 255, .03);
+  --accent: #6fc496;            /* signal green — metrics, live status only (AA @ 6.8:1 on --bg) */
+  --line-faint: rgba(255, 255, 255, .04); /* ambient background texture only, never dividers */
 }
 
 /* ---------- Base ---------- */
 body {
   margin: 0;
   background: var(--bg);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--line-faint) 0px,
+    var(--line-faint) 1px,
+    transparent 1px,
+    transparent 88px
+  );
   color: var(--fg);
   font-family: var(--font-body);
   font-size: var(--text-body);
@@ -87,6 +98,11 @@ body {
   -webkit-font-smoothing: antialiased;
   transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
 }
+
+body[data-bg='vignette'] {
+  background-image: radial-gradient(ellipse 1000px 560px at 28% -6%, var(--panel), transparent 70%);
+}
+
 a { color: var(--fg); text-decoration: none; }
 a:hover { color: var(--fg2); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }

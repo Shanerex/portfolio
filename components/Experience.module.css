@@ -46,6 +46,13 @@
   color: var(--fg2);
 }
 
+.metric {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
 @media (max-width: 767px) {
   .header {
     flex-direction: column;

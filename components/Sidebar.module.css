@@ -28,22 +28,14 @@
   transition: color var(--dur-hover) ease;
 }
 
-.navLink::before {
-  content: '';
-  width: 16px;
-  height: 1px;
-  background: var(--line2);
+.navIcon {
+  display: flex;
   flex: none;
-  transition: background var(--dur-hover) ease;
 }
 
 .navLink:hover,
 .navLink[aria-current='true'] {
   color: var(--fg);
-}
-
-.navLink[aria-current='true']::before {
-  background: var(--fg4);
 }
 
 .meta {
@@ -62,6 +54,9 @@
 }
 
 .email {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
   color: var(--fg);
   border-bottom: 1px solid var(--line2);
   padding-bottom: 3px;
@@ -73,6 +68,9 @@
 }
 
 .link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
   color: var(--fg4);
   transition: color var(--dur-hover) ease;
 }
@@ -87,10 +85,6 @@
     flex-wrap: wrap;
     gap: var(--sp-7);
     margin-top: var(--sp-8);
-  }
-
-  .navLink::before {
-    display: none;
   }
 
   .contact {

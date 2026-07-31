@@ -1,18 +1,81 @@
-.list {
+/* No rules between groups — the section is already inside one, and the lead
+   lines separate the groups on their own. */
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-11);
+}
+
+.groupLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--text-tag);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg4);
+  margin: 0 0 var(--sp-4);
+}
+
+.lead,
+.rest {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.chip {
-  padding: 7px 12px;
-  border: 1px solid var(--line2);
-  border-radius: var(--radius-pill);
+/* The only place the display face is set at body scale. Sized to --text-h3 so a
+   lead skill ranks exactly with a job title, never above one. */
+.lead {
+  align-items: baseline;
+  column-gap: var(--sp-6);
+  row-gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+/* Hairline — the page's one structural device, at word scale. Trails the item
+   so a wrap reads as a continuation instead of a stray leading rule. */
+.lead li:not(:last-child) {
+  border-right: 1px solid var(--line2);
+  padding-right: var(--sp-6);
+}
+
+.rest {
+  align-items: baseline;
+  column-gap: var(--sp-2);
+  row-gap: 2px;
+  margin-top: var(--sp-3);
   font-family: var(--font-mono);
   font-size: var(--text-chip);
-  line-height: 1;
-  color: var(--fg2);
+  line-height: 1.75;
+  color: var(--fg3);
+}
+
+/* Trails the item it follows, so a wrap never starts a line with a separator. */
+.rest li:not(:last-child)::after {
+  content: '·';
+  margin-left: var(--sp-2);
+  color: var(--line2);
+}
+
+/* Narrow columns wrap the lead line, which would leave a hairline dangling at
+   each line end. Stack instead — one lead skill per line, no separators needed. */
+@media (max-width: 767px) {
+  .lead {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 3px;
+    font-size: var(--text-h4);
+  }
+
+  .lead li:not(:last-child) {
+    border-right: none;
+    padding-right: 0;
+  }
 }

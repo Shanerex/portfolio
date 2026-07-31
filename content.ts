@@ -10,8 +10,9 @@ export type ExperienceEntry = {
 export type Project = {
   name: string
   stack: string
-  description: string
-  href: string
+  status: 'in-progress' | 'completed'
+  description: string[]
+  href?: string
 }
 
 export const site = {
@@ -19,7 +20,7 @@ export const site = {
   blurb:
     'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
   lede:
-    'Three years building distributed services that stay up: streaming pipelines, transaction engines and zero-downtime migrations. I own what I ship — design doc through production incident.',
+    "I'm an engineer who cares as much about how I build as what I ship. By profession I build event-driven backends on Java, Spring Boot and GCP. The rest of my time keeps turning into the same question, answered differently. A rough stretch of AI-assisted coding became a spec-driven workflow, now running across my team. That workflow turned into two side builds of my own: a file upload API and a full site rebuild. Years of competitive tennis taught me the only rule that matters during an outage: no dwelling on the last point, just play the next one.",
   location: 'Bengaluru, India',
   availability: 'Open to new roles',
   email: 'shanerexsasikumar@gmail.com',
@@ -29,10 +30,9 @@ export const site = {
     { label: 'Skills', href: '#skills' },
     { label: 'About', href: '#about' },
   ] satisfies Link[],
-  // TODO(shane): replace the two placeholder URLs below before launch.
   links: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shanerexsasikumar' },
-    { label: 'GitHub', href: 'https://github.com/shanerex' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shane-rex-sasikumar' },
+    { label: 'GitHub', href: 'https://github.com/Shanerex' },
     { label: 'CV', href: '/cv.pdf' },
   ] satisfies Link[],
 }
@@ -40,69 +40,122 @@ export const site = {
 export const experience: ExperienceEntry[] = [
   {
     title: 'Senior Software Engineer',
-    dates: '2025 — Present',
+    dates: 'Aug 2025 — Present',
     company: 'Bounteous x Accolite',
     bullets: [
-      'Pub/Sub pipeline for 20+ event types — 300,000+ requests a day at 99.99% delivery.',
-      'Order history responses from 6-8s to under 1s via a Beam-fed pre-aggregated store.',
-      '400,000+ customer records migrated with zero downtime and no data loss.',
-      'Spec-driven workflow adopted team-wide; 30-50% faster than estimates.',
+      'Architected a GCP Pub/Sub pipeline ingesting 20+ webhook event types, handling 300,000+ requests a day at 99.99% delivery reliability.',
+      'Chose Pub/Sub over synchronous HTTP fanout to decouple ingestion from processing, isolating faults per event type with dead-letter queues and exponential backoff retries.',
+      'Cut order history API responses from 6-8s to under 1s by replacing direct BigQuery queries with a pre-aggregated SQL Server store, fed by a Dataflow/Beam streaming pipeline.',
+      'Owned end-to-end migration of 400,000+ customer records to a new platform, with zero downtime and no data loss.',
+      'Introduced and drove team-wide adoption of a Spec Driven Development workflow, cutting development time 30-50% against estimates.',
+      'Diagnosed and resolved a production data integrity incident, reconciling 35,000 incorrect debits and restoring 20,000 missing cancellation credits with zero customer escalations.',
     ],
   },
   {
     title: 'Software Analyst',
-    dates: '2023 — 2025',
+    dates: 'Jun 2023 — Jul 2025',
     company: 'Bounteous x Accolite',
     bullets: [
-      'Credit management system built from scratch; 3M+ transactions migrated live.',
-      'Fixed a registration race handing out duplicate customer numbers.',
-      'NiFi ingestion pipeline replacing 100+ manual hours a month.',
-      'JUnit coverage 75% → 90%; Cloud Monitoring dashboards and alerting.',
+      'Designed and built a credit management system from scratch on Spring Boot and Cloud SQL, migrating 3M+ historical transactions live with zero downtime.',
+      'Eliminated a concurrency race that handed out duplicate customer numbers at registration, wrapping ID generation in a Firestore transaction.',
+      'Automated an inventory data ingestion pipeline on Apache NiFi, eliminating 100+ hours of manual effort a month.',
+      'Built Cloud Monitoring dashboards and multi-threshold alerting across distributed Cloud Run services, improving observability and cutting MTTR.',
+      'Raised JUnit test coverage from 75% to 88% by introducing parameterized tests and mocking strategies.',
     ],
   },
 ]
 
-// TODO(shane): replace the three placeholder repo URLs before launch.
 export const projects: Project[] = [
   {
-    name: 'file-upload-sdd',
-    stack: 'Spring Boot 4 · GCS',
-    description:
-      'Five endpoints, five spec folders. Every feature specified before it was written.',
-    href: 'https://github.com/shanerex/file-upload-sdd',
+    name: 'cryptouijc',
+    stack: 'Kotlin · Jetpack Compose',
+    status: 'completed',
+    description: [
+      'Crypto trading app UI cloned in Jetpack Compose: home, prices, portfolio, trade, transaction and settings screens.',
+      'Bottom navigation ties the screens together, plus a coin detail view.',
+      'Runs on static sample data, no backend or live pricing API.',
+    ],
+    href: 'https://github.com/Shanerex/CryptoUIJC',
   },
   {
     name: 'alef-jasper-rebuild',
     stack: 'Next.js · Spring AI',
-    description:
-      'Full-stack rebuild with an AI RFQ concierge, running entirely on local infrastructure.',
-    href: 'https://github.com/shanerex/alef-jasper-rebuild',
+    status: 'in-progress',
+    description: [
+      'Full-stack rebuild of a marketing site: home, services, project portfolio, trust, team, contact and lead capture.',
+      'Next.js frontend, Spring Boot API and Postgres, running locally through Docker Compose.',
+      'Every feature specified through requirements, architecture and design docs before implementation.',
+      'Spec includes an AI RFQ concierge on Spring AI.',
+    ],
+    href: 'https://github.com/Shanerex/alef-jasper-rebuild',
   },
   {
-    name: 'concurrency-client-server',
-    stack: 'Java · Threads',
-    description:
-      'Thread pools, backpressure and graceful shutdown, learned by building them.',
-    href: 'https://github.com/shanerex/concurrency-client-server',
+    name: 'Atlas',
+    stack: 'React · Spring Boot · PostgreSQL · GCP',
+    status: 'in-progress',
+    description: [
+      'In-house PIM replacing Fabric PIM, covering the subset of its feature set the client actually uses.',
+      'Co-drafted the technical design. Built spec-driven with Claude agents, hooks and skills, every piece of functionality scoped in its own spec.',
+      'React/Vite frontend, Spring Boot and PostgreSQL backend, deployed on GCP.',
+    ],
   },
 ]
 
-export const skills: string[] = [
-  'Java',
-  'Spring Boot',
-  'GCP Pub/Sub',
-  'Cloud Run',
-  'Dataflow · Beam',
-  'BigQuery',
-  'Cloud SQL',
-  'Redis',
-  'Firestore',
-  'PostgreSQL',
-  'Apache NiFi',
-  'Docker',
-  'JUnit 5',
-  'Distributed systems',
+/**
+ * `lead` is how many of the leading `items` headline the group. Those set in the
+ * display face; the rest follow as a quiet run. Reorder `items` to change which
+ * ones lead — the first `lead` entries are the ones that get the weight.
+ */
+export type SkillGroup = { category: string; lead: number; items: string[] }
+
+export const skills: SkillGroup[] = [
+  {
+    category: 'Languages & Frameworks',
+    lead: 2,
+    items: ['Java', 'Spring Boot', 'JUnit 5', 'Hibernate · JPA'],
+  },
+  {
+    category: 'Cloud & Infrastructure',
+    lead: 3,
+    items: [
+      'GCP Pub/Sub',
+      'Dataflow',
+      'BigQuery',
+      'Cloud Run',
+      'Cloud SQL',
+      'Cloud Build',
+      'Cloud Tasks',
+      'GCS',
+      'Cloud Monitoring',
+      'Cloud Scheduler',
+      'Docker',
+    ],
+  },
+  {
+    category: 'Databases & Data',
+    lead: 2,
+    items: ['PostgreSQL', 'SQL Server', 'Firestore', 'Apache Beam', 'Apache NiFi', 'Redis'],
+  },
+  {
+    category: 'Core Concepts',
+    lead: 3,
+    items: [
+      'Event-Driven Architecture',
+      'Distributed Systems',
+      'Spec Driven Development',
+      'Microservices',
+      'System Design',
+      'REST API Design',
+      'Multithreading & Concurrency',
+      'Agentic Engineering',
+    ],
+  },
+  {
+    category: 'Tools',
+    lead: 1,
+    items: ['Claude Code', 'Git', 'Apache Maven', 'IntelliJ IDEA', 'Visual Studio Code'],
+  },
 ]
 
 export const about =
-  'B.E. Computer Science, Thiagarajar College of Engineering — 9.42 CGPA. Off the clock I play tennis (a few tournament wins in school and college), cricket and badminton, and watch plenty more. Weekends go to films with a story worth following, in any language.'
+  "I studied Computer Science at Thiagarajar College of Engineering and came out the other side with a 9.42 CGPA. Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up."

@@ -31,35 +31,77 @@ test('every role renders with all of its bullets', async ({ page }) => {
   }
 })
 
-test('every project renders and links out safely', async ({ page }) => {
+test('every linked project renders and links out safely', async ({ page }) => {
   await page.goto('/')
+  const linked = projects.filter((project) => project.href)
   const rows = page.locator('section#projects a')
-  await expect(rows).toHaveCount(projects.length)
+  await expect(rows).toHaveCount(linked.length)
 
-  for (const [i, project] of projects.entries()) {
+  for (const [i, project] of linked.entries()) {
     const row = rows.nth(i)
-    await expect(row).toHaveAttribute('href', project.href)
+    await expect(row).toHaveAttribute('href', project.href!)
     await expect(row).toHaveAttribute('target', '_blank')
     await expect(row).toHaveAttribute('rel', /noreferrer/)
     await expect(row).toContainText(project.name)
     await expect(row).toContainText(project.stack)
-    await expect(row).toContainText(project.description)
+    await expect(row).toContainText(project.status === 'in-progress' ? 'In progress' : 'Completed')
+    for (const bullet of project.description) {
+      await expect(row).toContainText(bullet)
+    }
+  }
+})
+
+test('every project renders, linked or not', async ({ page }) => {
+  await page.goto('/')
+  const section = page.locator('section#projects')
+  for (const project of projects) {
+    await expect(section).toContainText(project.name)
+    await expect(section).toContainText(project.stack)
+    await expect(section).toContainText(project.status === 'in-progress' ? 'In progress' : 'Completed')
+    for (const bullet of project.description) {
+      await expect(section).toContainText(bullet)
+    }
   }
 })
 
 test('project links are all external https URLs', async ({ page }) => {
   await page.goto('/')
   for (const project of projects) {
+    if (!project.href) continue
     expect(project.href, `${project.name} must use https`).toMatch(/^https:\/\//)
   }
 })
 
-test('every skill renders as a chip', async ({ page }) => {
+test('every skill renders in content order under its category', async ({ page }) => {
   await page.goto('/')
-  const chips = page.locator('section#skills li')
-  await expect(chips).toHaveCount(skills.length)
-  for (const [i, skill] of skills.entries()) {
-    await expect(chips.nth(i)).toHaveText(skill)
+  const allItems = skills.flatMap((group) => group.items)
+  const items = page.locator('section#skills li')
+  await expect(items).toHaveCount(allItems.length)
+  for (const [i, skill] of allItems.entries()) {
+    await expect(items.nth(i)).toHaveText(skill)
+  }
+
+  const section = page.locator('section#skills')
+  for (const group of skills) {
+    await expect(section).toContainText(group.category)
+  }
+})
+
+test('each group splits into its lead skills and the rest', async ({ page }) => {
+  await page.goto('/')
+  for (const [i, group] of skills.entries()) {
+    expect(group.lead, `${group.category} lead must be within items`).toBeLessThanOrEqual(
+      group.items.length,
+    )
+    const lists = page.locator('section#skills h3').nth(i).locator('~ ul')
+    const lead = lists.nth(0).locator('li')
+    await expect(lead).toHaveCount(group.lead)
+    await expect(lead.nth(0)).toHaveText(group.items[0])
+
+    const restCount = group.items.length - group.lead
+    if (restCount > 0) {
+      await expect(lists.nth(1).locator('li')).toHaveCount(restCount)
+    }
   }
 })
 
