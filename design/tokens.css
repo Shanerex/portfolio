@@ -1,113 +1,67 @@
+/* Source of truth is app/globals.css. This file mirrors it for design reference. */
+
+/* ============ Redesign tokens ============ */
 :root {
-  /* ---------- Typography ---------- */
-  --font-display: 'Archivo', system-ui, sans-serif;      /* headings, 600 */
-  --font-body: 'IBM Plex Sans', system-ui, sans-serif;   /* body, 400 */
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace; /* labels, meta, chips */
+  /* Type */
+  --t-hero:    clamp(44px, 9vw, 132px);   --lh-hero: .92;   --ls-hero: -.04em;
+  --t-display: clamp(28px, 4vw, 46px);    --lh-display: 1.05; --ls-display: -.025em;
+  --t-metric:  clamp(22px, 3.2vw, 38px);
+  --t-h3:      20px;   --lh-h3: 1.3;
+  --t-h4:      17px;   --lh-h4: 1.3;
+  --t-lede:    clamp(19px, 2.2vw, 24px);  --lh-lede: 1.6;
+  --t-body:    16px;   --lh-body: 1.7;
+  --t-sm:      14.5px; --lh-sm: 1.6;
+  --t-label:   12px;   --ls-label: .2em;
+  --t-meta:    12.5px;
 
-  --text-h1: 30px;   --lh-h1: 1.18;  --ls-h1: -0.03em;   /* sidebar name */
-  --text-lede: 21px; --lh-lede: 1.65;                    /* opening paragraph */
-  --text-h3: 18px;   --lh-h3: 1.3;                       /* job title */
-  --text-h4: 16.5px; --lh-h4: 1.3;                       /* project title */
-  --text-body: 15px; --lh-body: 1.7;                     /* bullets */
-  --text-body-lg: 16px; --lh-body-lg: 1.8;               /* About paragraph */
-  --text-sm: 15.5px; --lh-sm: 1.55;                      /* sidebar blurb */
-  --text-sm2: 14.5px; --lh-sm2: 1.6;                     /* project desc, company */
-  --text-nav: 14px;
-  --text-meta: 12px;    --lh-meta: 1.9;                  /* mono dates, location */
-  --text-label: 12.5px; --ls-label: 0.12em;              /* SECTION LABELS, uppercase */
-  --text-chip: 13px;                                     /* skill chips */
-  --text-tag: 11.5px;                                    /* project stack tag */
+  /* Spacing */
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;  --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px;  --s-9: 96px; --s-10: 128px; --s-11: 176px;
 
-  /* ---------- Spacing scale (px) ---------- */
-  --sp-1: 5px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 14px; --sp-5: 16px;
-  --sp-6: 18px; --sp-7: 22px; --sp-8: 26px; --sp-9: 28px; --sp-10: 34px;
-  --sp-11: 38px; --sp-12: 44px; --sp-13: 48px; --sp-14: 52px; --sp-15: 56px;
-  --sp-16: 64px; --sp-17: 90px;
+  /* Layout */
+  --page-max: 1280px;
+  --gutter:   clamp(20px, 4vw, 56px);
+  --col-gap:  clamp(16px, 2.5vw, 32px);
+  --rail-w:   clamp(112px, 10vw, 168px);
 
-  /* ---------- Layout ---------- */
-  --sidebar-w: 340px;
-  --content-max: 720px;
-  --sidebar-pad: 64px 40px;
-  --content-pad: 64px 56px 90px;
-
-  /* ---------- Radius ---------- */
-  --radius-pill: 99px;   /* skill chips, theme toggle */
-  --radius-sm: 8px;      /* only if you add cards */
-
-  /* ---------- Motion ---------- */
-  --ease-out: cubic-bezier(.2, .8, .2, 1);
-  --dur-reveal: .6s;
-  --dur-reveal-lede: .7s;
-  --dur-hover: .3s;
-  --dur-theme: .35s;
-  --reveal-offset: 12px;   /* 14px for the lede */
-
-  /* No shadows anywhere. No accent colour. Hierarchy is type + hairlines only. */
+  /* Motion */
+  --ease-cut:  cubic-bezier(.2, .9, .25, 1);
+  --ease-wipe: cubic-bezier(.65, 0, .35, 1);
+  --dur-cut:   380ms;
+  --dur-wipe:  700ms;
+  --dur-hover: 250ms;
+  --dur-theme: 450ms;
 }
 
-/* ---------- Light theme (default) ---------- */
 :root,
-[data-theme='light'] {
-  --bg:    #faf9f7;             /* page background */
-  --panel: #ffffff;             /* raised surface: theme toggle */
-  --fg:    #16161a;             /* headings, primary links */
-  --fg2:   #3f3f45;             /* body copy, bullets, chips */
-  --fg3:   #5f5d59;             /* secondary text, company, project desc */
-  --fg4:   #7a7772;             /* section labels, inactive nav */
-  --fg5:   #8d8a85;             /* mono meta: dates, location, stack tags */
-  --line:  rgba(0, 0, 0, .10);  /* section dividers, sidebar border */
-  --line2: rgba(0, 0, 0, .14);  /* chip borders, link underlines */
-  --hover: rgba(0, 0, 0, .035); /* optional row hover wash */
+[data-theme='night'] {
+  color-scheme: dark;
+  --surround:    #060A11;
+  --court:       #0F3A63;
+  --court-tint:  #0A2440;
+  --line:        #EEF3F8;
+  --line-2:      #9DB0C6;
+  --meta:        #6E839B;
+  --ball:        #DCF24B;
+  --ball-ink:    #DCF24B;
+  --on-court:    #EEF3F8;
+  --flood:       rgba(255, 247, 225, .16);
+  --rule:        rgba(238, 243, 248, .16);
+  --rule-strong: rgba(238, 243, 248, .30);
 }
 
-/* ---------- Dark theme ---------- */
-[data-theme='dark'] {
-  --bg:    #101011;
-  --panel: #17171a;
-  --fg:    #edebe8;
-  --fg2:   #c4c1bd;
-  --fg3:   #a4a19c;
-  --fg4:   #8e8b87;
-  --fg5:   #78756f;
-  --line:  rgba(255, 255, 255, .09);
-  --line2: rgba(255, 255, 255, .14);
-  --hover: rgba(255, 255, 255, .03);
-}
-
-/* ---------- Base ---------- */
-html { color-scheme: light dark; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  line-height: var(--lh-body);
-  -webkit-font-smoothing: antialiased;
-  transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
-}
-a { color: var(--fg); text-decoration: none; }
-a:hover { color: var(--fg2); }
-h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
-
-/* ---------- Section label ---------- */
-.label {
-  font-family: var(--font-mono);
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: var(--ls-label);
-  text-transform: uppercase;
-  color: var(--fg4);
-  line-height: 1;
-}
-
-/* ---------- Scroll reveal (JS adds .is-in via IntersectionObserver) ---------- */
-.reveal {
-  opacity: 0;
-  transform: translateY(var(--reveal-offset));
-  transition: opacity var(--dur-reveal) ease, transform var(--dur-reveal) ease;
-}
-.reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+[data-theme='day'] {
+  color-scheme: light;
+  --surround:    #EAEDF1;
+  --court:       #1F5A93;
+  --court-tint:  #3E7CB8;
+  --line:        #0C1A2A;
+  --line-2:      #3C4E63;
+  --meta:        #56677D;
+  --ball:        #DCF24B;
+  --ball-ink:    #55670A;
+  --on-court:    #F7F9FB;
+  --flood:       rgba(255, 250, 235, .70);
+  --rule:        rgba(12, 26, 42, .14);
+  --rule-strong: rgba(12, 26, 42, .28);
 }

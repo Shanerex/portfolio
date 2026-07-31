@@ -4,9 +4,9 @@ import './globals.css'
 
 const archivo = Archivo({
   subsets: ['latin'],
-  weight: ['600'],
   variable: '--font-archivo',
   display: 'swap',
+  axes: ['wdth'],
 })
 
 const plexSans = IBM_Plex_Sans({

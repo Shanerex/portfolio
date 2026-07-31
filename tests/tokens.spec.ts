@@ -1,4 +1,14 @@
 import { test, expect } from '@playwright/test'
+import { contrastRatio, rgbToHex } from './helpers/contrast'
+
+test('contrast helper matches known reference values', () => {
+  // Black on white is exactly 21:1
+  expect(contrastRatio('#000000', '#FFFFFF')).toBeCloseTo(21, 1)
+  // A colour against itself is exactly 1:1
+  expect(contrastRatio('#DCF24B', '#DCF24B')).toBeCloseTo(1, 5)
+  expect(rgbToHex('rgb(220, 242, 75)')).toBe('#DCF24B')
+  expect(rgbToHex('rgba(6, 10, 17, 0.9)')).toBe('#060A11')
+})
 
 test('font tokens resolve to the self-hosted families', async ({ page }) => {
   await page.goto('/')
@@ -31,4 +41,60 @@ test('page uses the two-column grid at desktop width', async ({ page }) => {
     .locator('.page')
     .evaluate((el) => getComputedStyle(el).gridTemplateColumns)
   expect(cols.startsWith('340px')).toBe(true)
+})
+
+const NIGHT = {
+  surround: '#060a11', court: '#0f3a63', courtTint: '#0a2440',
+  line: '#eef3f8', line2: '#9db0c6', meta: '#6e839b',
+  ball: '#dcf24b', ballInk: '#dcf24b', onCourt: '#eef3f8',
+}
+const DAY = {
+  surround: '#eaedf1', court: '#1f5a93', courtTint: '#3e7cb8',
+  line: '#0c1a2a', line2: '#3c4e63', meta: '#56677d',
+  ball: '#dcf24b', ballInk: '#55670a', onCourt: '#f7f9fb',
+}
+
+async function palette(page: import('@playwright/test').Page, theme: 'night' | 'day') {
+  await page.goto('/')
+  await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
+  return page.evaluate(() => {
+    const s = getComputedStyle(document.documentElement)
+    const read = (n: string) => s.getPropertyValue(n).trim()
+    return {
+      surround: read('--surround'), court: read('--court'), courtTint: read('--court-tint'),
+      line: read('--line'), line2: read('--line-2'), meta: read('--meta'),
+      ball: read('--ball'), ballInk: read('--ball-ink'), onCourt: read('--on-court'),
+    }
+  })
+}
+
+test('night palette resolves to the documented values', async ({ page }) => {
+  expect(await palette(page, 'night')).toEqual(NIGHT)
+})
+
+test('day palette resolves to the documented values', async ({ page }) => {
+  expect(await palette(page, 'day')).toEqual(DAY)
+})
+
+for (const [name, p] of [['night', NIGHT], ['day', DAY]] as const) {
+  test(`${name} palette meets WCAG AA for every text pairing`, async () => {
+    const pairs: [string, string, string][] = [
+      ['line-2 on surround', p.line2, p.surround],
+      ['meta on surround', p.meta, p.surround],
+      ['ball-ink on surround', p.ballInk, p.surround],
+      ['line on surround', p.line, p.surround],
+      ['on-court on court', p.onCourt, p.court],
+    ]
+    for (const [label, fg, bg] of pairs) {
+      expect(contrastRatio(fg, bg), `${name}: ${label}`).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+}
+
+test('unsafe pairings are documented as failing, so nobody uses them for text', () => {
+  // --ball on the day surround is effectively invisible. Day match must use --ball-ink.
+  expect(contrastRatio(DAY.ball, DAY.surround)).toBeLessThan(2)
+  // --court-tint is decorative in both themes.
+  expect(contrastRatio(NIGHT.onCourt, NIGHT.courtTint)).toBeGreaterThanOrEqual(4.5)
+  expect(contrastRatio(DAY.onCourt, DAY.courtTint)).toBeLessThan(4.5)
 })
