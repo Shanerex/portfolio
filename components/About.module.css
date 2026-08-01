@@ -1,0 +1,7 @@
+.body {
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--line-2);
+  text-wrap: pretty;
+  margin: 0;
+}

@@ -1,0 +1,185 @@
+/* ============ Redesign tokens ============ */
+:root {
+  /* Type */
+  --t-hero:    clamp(44px, 9vw, 132px);   --lh-hero: .92;   --ls-hero: -.04em;
+  --t-display: clamp(28px, 4vw, 46px);    --lh-display: 1.05; --ls-display: -.025em;
+  --t-metric:  clamp(22px, 3.2vw, 38px);
+  --t-h3:      20px;   --lh-h3: 1.3;
+  --t-h4:      17px;   --lh-h4: 1.3;
+  --t-lede:    clamp(19px, 2.2vw, 24px);  --lh-lede: 1.6;
+  --t-body:    16px;   --lh-body: 1.7;
+  --t-sm:      14.5px; --lh-sm: 1.6;
+  --t-label:   12px;   --ls-label: .2em;
+  --t-meta:    12.5px;
+
+  /* Spacing */
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;  --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px;  --s-9: 96px; --s-10: 128px; --s-11: 176px;
+
+  /* Layout */
+  --page-max: 1280px;
+  --gutter:   clamp(20px, 4vw, 56px);
+  --col-gap:  clamp(16px, 2.5vw, 32px);
+  --rail-w:   clamp(112px, 10vw, 168px);
+
+  /* Motion */
+  --ease-cut:  cubic-bezier(.2, .9, .25, 1);
+  --ease-wipe: cubic-bezier(.65, 0, .35, 1);
+  --dur-cut:   380ms;
+  --dur-wipe:  700ms;
+  --dur-hover: 250ms;
+  --dur-theme: 450ms;
+
+  /* Fonts */
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* Radius */
+  --radius-pill: 99px;
+}
+
+:root,
+[data-theme='night'] {
+  color-scheme: dark;
+  --surround:    #060A11;
+  --court:       #0F3A63;
+  --court-tint:  #0A2440;
+  --ink:         #EEF3F8;
+  --line-2:      #9DB0C6;
+  --meta:        #6E839B;
+  --ball:        #DCF24B;
+  --ball-ink:    #DCF24B;
+  --on-court:    #EEF3F8;
+  --flood:       rgba(255, 247, 225, .16);
+  --rule:        rgba(238, 243, 248, .16);
+  --rule-strong: rgba(238, 243, 248, .30);
+}
+
+[data-theme='day'] {
+  color-scheme: light;
+  --surround:    #EAEDF1;
+  --court:       #1F5A93;
+  --court-tint:  #3E7CB8;
+  --ink:         #0C1A2A;
+  --line-2:      #3C4E63;
+  --meta:        #56677D;
+  --ball:        #DCF24B;
+  --ball-ink:    #55670A;
+  --on-court:    #F7F9FB;
+  --flood:       rgba(255, 250, 235, .70);
+  --rule:        rgba(12, 26, 42, .14);
+  --rule-strong: rgba(12, 26, 42, .28);
+}
+
+/* ---------- Base ---------- */
+body {
+  margin: 0;
+  background: var(--surround);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--rule) 0px,
+    var(--rule) 1px,
+    transparent 1px,
+    transparent 88px
+  );
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
+}
+
+/* ---------- Rail space reservation ---------- */
+body { padding-bottom: 56px; }
+
+@media (min-width: 1024px) {
+  body { padding-bottom: 0; padding-left: var(--rail-w); }
+}
+
+a { color: var(--ink); text-decoration: none; }
+a:hover { color: var(--line-2); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- Scroll reveal (JS adds .is-in via IntersectionObserver) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--dur-cut) var(--ease-cut), transform var(--dur-cut) var(--ease-cut);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Wipe reveal (JS adds .is-in via IntersectionObserver) ---------- */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--dur-wipe) var(--ease-wipe);
+}
+
+.wipe.is-in { clip-path: inset(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wipe { clip-path: none; transition: none; }
+}
+
+.content {
+  /* Width and side gutters are owned entirely by .court (see below);
+     .content itself is just a positioning context. The rail's own space
+     is reserved separately via body padding-left (see "Rail space
+     reservation" above). */
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ---------- Section rhythm ---------- */
+.section {
+  margin-top: var(--s-9);
+  padding-top: var(--s-7);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.section:first-of-type {
+  margin-top: 0;
+  border-top: none;
+}
+
+/* ============ Court grid ============ */
+.court {
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 1fr;
+  column-gap: var(--col-gap);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.bleed   { grid-column: 1 / -1; }
+.singles { grid-column: 2 / 4; }
+.deuce   { grid-column: 1 / 3; }
+.ad      { grid-column: 3 / -1; }
+
+@media (max-width: 1023px) {
+  .deuce, .ad { grid-column: 2 / 4; }
+}
+
+@media (max-width: 767px) {
+  .court { grid-template-columns: 1fr; }
+  .bleed, .singles, .deuce, .ad { grid-column: 1 / -1; }
+}
