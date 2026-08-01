@@ -42,7 +42,6 @@ export const site = {
   links: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shane-rex-sasikumar' },
     { label: 'GitHub', href: 'https://github.com/Shanerex' },
-    { label: 'CV', href: '/cv.pdf' },
   ] satisfies Link[],
 }
 
