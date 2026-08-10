@@ -1,38 +1,20 @@
-/* ThemeToggle now lives inside Rail's .foot (a normal-flow flex item, see
-   Rail.tsx/Rail.module.css) rather than floating over a large sidebar, so it
-   is styled in-flow using the new night/day token system instead of the
-   legacy absolute-positioned, light/dark-only styling it replaced. */
 .toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  min-height: 44px;
-  padding: 8px 13px;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-pill);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--h-line-strong);
   background: transparent;
-  color: var(--meta);
-  font-family: var(--font-mono);
-  font-size: var(--t-meta);
-  line-height: 1;
+  color: var(--h-ink-dim);
   cursor: pointer;
-  transition: border-color var(--dur-hover) var(--ease-cut), color var(--dur-hover) var(--ease-cut);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex: none;
+  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
 }
 
 .toggle:hover {
-  border-color: var(--rule-strong);
-  color: var(--ink);
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--meta);
-  background: transparent;
-  flex: none;
-}
-
-[data-theme='night'] .dot {
-  background: var(--meta);
+  color: var(--h-ink);
+  border-color: var(--h-ink-dim);
 }

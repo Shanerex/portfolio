@@ -1,4 +1,4 @@
-import Rail from '@/components/Rail'
+import Header from '@/components/Header'
 import Intro from '@/components/Intro'
 import Experience from '@/components/Experience'
 import Projects from '@/components/Projects'
@@ -12,7 +12,8 @@ import ImpactBand from '@/components/ImpactBand'
 export default function Home() {
   return (
     <div className="page">
-      <Rail />
+      <a id="top" />
+      <Header />
       <main className="content">
         <Hero />
         <ImpactBand />

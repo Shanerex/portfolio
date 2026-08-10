@@ -1,4 +1,4 @@
-export type Link = { label: string; href: string }
+export type NavItem = { method: 'GET' | 'POST'; path: string; href: string }
 
 export type ExperienceEntry = {
   title: string
@@ -34,15 +34,15 @@ export const site = {
   ] satisfies Metric[],
   email: 'shanerexsasikumar@gmail.com',
   nav: [
-    { label: 'Experience', href: '#experience' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'About', href: '#about' },
-  ] satisfies Link[],
-  links: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shane-rex-sasikumar' },
-    { label: 'GitHub', href: 'https://github.com/Shanerex' },
-  ] satisfies Link[],
+    { method: 'GET', path: '/journey', href: '#journey' },
+    { method: 'GET', path: '/projects', href: '#projects' },
+    { method: 'GET', path: '/skills', href: '#skills' },
+    { method: 'GET', path: '/now', href: '#now' },
+    { method: 'POST', path: '/contact', href: '#contact' },
+  ] satisfies NavItem[],
+  linkedin: 'https://www.linkedin.com/in/shane-rex-sasikumar',
+  github: 'https://github.com/Shanerex',
+  resumeHref: '/resume.pdf',
 }
 
 export const experience: ExperienceEntry[] = [

@@ -67,3 +67,20 @@ test('body background and text color follow the active theme', async ({ page }) 
     expect(bodyColor, `${theme}: body color`).toBe(hexToRgb(tokenInk))
   }
 })
+
+test('toggle switches the theme and persists it across reload', async ({ browser }) => {
+  const ctx = await browser.newContext()
+  const page = await ctx.newPage()
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+  await page.getByRole('button', { name: /mode/i }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+  const stored = await page.evaluate(() => localStorage.getItem('srs-theme'))
+  expect(stored).toBe('light')
+
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await ctx.close()
+})
