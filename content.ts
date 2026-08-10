@@ -128,6 +128,23 @@ export const journey: JourneyEntry[] = [
     ),
 ]
 
+export type NowEntry = { tag: string; text: string }
+
+export const now: NowEntry[] = [
+  {
+    tag: 'AT WORK',
+    text: 'Rolling out Spec Driven Development as the default workflow across the team.',
+  },
+  {
+    tag: 'BUILDING',
+    text: 'Atlas, an in-house PIM built spec-driven end to end, deployed on GCP.',
+  },
+  {
+    tag: 'BUILDING',
+    text: 'A full-stack rebuild of a marketing site with an AI RFQ concierge on Spring AI.',
+  },
+]
+
 export const projects: Project[] = [
   {
     name: 'cryptouijc',

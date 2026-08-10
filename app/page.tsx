@@ -3,6 +3,7 @@ import Intro from '@/components/Intro'
 import Journey from '@/components/Journey'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
+import Now from '@/components/Now'
 import Contact from '@/components/Contact'
 import ScrollEffects from '@/components/ScrollEffects'
 import Hero from '@/components/Hero'
@@ -20,6 +21,7 @@ export default function Home() {
         <Journey />
         <Projects />
         <Skills />
+        <Now />
         <Contact />
       </main>
       <ScrollEffects />

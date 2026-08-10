@@ -1,0 +1,29 @@
+.section {
+  padding-block: clamp(40px, 6vw, 64px);
+}
+
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
+
+.row {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-mute);
+  flex: none;
+  width: 90px;
+}
+
+.text {
+  font-size: 15.5px;
+  color: var(--ink);
+  opacity: .88;
+  line-height: 1.6;
+}
