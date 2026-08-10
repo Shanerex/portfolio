@@ -39,7 +39,7 @@
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: CSS custom properties every later task relies on — `--bg`, `--surface`, `--ink`, `--ink-dim`, `--ink-mute`, `--line`, `--line-strong`, `--accent-text`, `--accent-2-text`, `--primary`, `--primary-ink`, `--t-*`, `--s-1`..`--s-9`, `--page-max`, `--gutter`, `--dur-reveal`, `--dur-hover`, `--dur-theme`, `--radius-pill`, `--radius-card`, `--font-display`, `--font-body`, `--font-mono`. Also the `.reveal`/`.is-in` mechanism and a `.wrap` container utility (`max-width: var(--page-max); margin: 0 auto; padding-inline: var(--gutter)`).
+- Produces: CSS custom properties every later task relies on — `--bg`, `--surface`, `--ink`, `--ink-dim`, `--ink-mute`, `--line`, `--line-strong`, `--accent-text`, `--accent-2-text`, `--primary`, `--primary-ink`, `--t-*`, `--s-1`..`--s-9`, `--page-max`, `--gutter`, `--dur-reveal`, `--dur-hover`, `--dur-theme`, `--radius-pill`, `--radius-card`, `--font-display`, `--font-body`, `--font-mono`. Also global (non-module) utility classes every later task reuses rather than redefining: `.reveal`/`.is-in`, `.wrap` (container), `.marker`/`.marker-label`/`.marker-rule` (the `// 0N_slug` section marker — used by Tasks 5, 6, 7, 8), and `.outline-pill` (the LinkedIn/GitHub-style outline button — used by Tasks 3 and 9). These four are deliberately global classes, not CSS-Module classes, matching the codebase's existing pattern of cross-component utilities living in `globals.css` (the retired `.court`/`.singles`/`.bleed` classes played the same role) — this is what lets four different section components share one marker definition instead of each redefining it.
 
 - [ ] **Step 1: Rewrite the failing token/theme tests first**
 
@@ -335,6 +335,46 @@ html { scroll-behavior: smooth; }
   margin: 0 auto;
   padding-inline: var(--gutter);
 }
+
+/* ---------- Shared section marker ("// 0N_slug" + hairline rule) ----------
+   Used identically by Journey, Projects, Skills and Now (Tasks 5, 6, 7, 8) —
+   defined once here instead of once per component so the four don't drift. */
+.marker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 44px;
+}
+.marker-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  color: var(--accent-text);
+}
+.marker-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* ---------- Shared outline pill button ----------
+   Used identically by Hero's LinkedIn/GitHub buttons and Contact's
+   LinkedIn/GitHub buttons (Tasks 3 and 9) — same reasoning as .marker above. */
+.outline-pill {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+.outline-pill:hover { color: var(--ink); border-color: var(--ink-dim); }
 ```
 
 - [ ] **Step 4: Mirror the tokens into `design/tokens.css`**
@@ -930,7 +970,7 @@ git commit -m "feat: replace the fixed rail with a sticky header"
 - Modify: `tests/hero.spec.ts`
 
 **Interfaces:**
-- Consumes: `site.name`, `site.thesis`, `site.blurb`, `site.lede`, `site.location`, `site.availability`, `site.email`, `site.linkedin`, `site.github` (all already exist or were added in Task 2).
+- Consumes: `site.name`, `site.thesis`, `site.blurb`, `site.lede`, `site.location`, `site.availability`, `site.email`, `site.linkedin`, `site.github` (all already exist or were added in Task 2); the global `.outline-pill` class from Task 1 for the LinkedIn/GitHub buttons.
 - Produces: `section#hero` containing exactly one `<h1>`; `[data-testid="terminal-card"]`; `<img src="/headshot.jpg">`.
 
 **Note:** `next build` runs ESLint, and `eslint-config-next`'s `@next/next/no-img-element` rule will print a warning on the plain `<img>` tag used below — this is expected (see Global Constraints on why `next/image` is intentionally not used) and does not fail the build; only ESLint *errors* fail `next build`, not warnings.
@@ -1029,7 +1069,7 @@ export default function Hero() {
               {site.email} ↗
             </a>
             <a
-              className={styles.outlineCta}
+              className="outline-pill"
               href={site.linkedin}
               target="_blank"
               rel="noreferrer"
@@ -1037,7 +1077,7 @@ export default function Hero() {
               LinkedIn
             </a>
             <a
-              className={styles.outlineCta}
+              className="outline-pill"
               href={site.github}
               target="_blank"
               rel="noreferrer"
@@ -1174,22 +1214,8 @@ export default function Hero() {
 
 .emailCta:hover { opacity: .88; transform: translateY(-2px); }
 
-.outlineCta {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  padding: 12px 20px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
-}
-
-.outlineCta:hover { color: var(--ink); border-color: var(--ink-dim); }
+/* LinkedIn/GitHub buttons use the shared .outline-pill global class from
+   app/globals.css (Task 1) — no local rule needed here. */
 
 .availability {
   font-family: var(--font-mono);
@@ -1520,7 +1546,7 @@ git commit -m "feat: replace the impact band with the lime system-status band"
 **Note:** `content.ts`'s `about` export and `components/Intro.tsx` (which renders `site.lede`, unrelated to `about`) are untouched here. `about` becomes unused once this task lands (nothing imports it), but it is deliberately **not** deleted yet — `tests/sections.spec.ts` still imports it until Task 12 deletes that file. Removing `about` now would break `tests/sections.spec.ts`'s TypeScript compilation. Leave it in place; Task 12 removes it.
 
 **Interfaces:**
-- Consumes: `experience: ExperienceEntry[]` (unchanged).
+- Consumes: `experience: ExperienceEntry[]` (unchanged); the global `.marker`/`.marker-label`/`.marker-rule` classes from Task 1.
 - Produces: `education: EducationEntry`, `journey: JourneyEntry[]` (oldest → newest: education, then every `experience` entry reversed, with `current: true` on the last one).
 
 - [ ] **Step 1: Update `content.ts`**
@@ -1643,9 +1669,9 @@ import styles from './Journey.module.css'
 export default function Journey() {
   return (
     <section id="journey" className={`${styles.section} wrap`}>
-      <div className={`${styles.marker} reveal`}>
-        <span className={styles.markerLabel}>// 01_journey</span>
-        <span className={styles.markerRule} />
+      <div className="marker reveal">
+        <span className="marker-label">// 01_journey</span>
+        <span className="marker-rule" />
       </div>
       <div className={styles.rail}>
         <div className={styles.railLine} aria-hidden="true" />
@@ -1699,9 +1725,8 @@ export default function Journey() {
   padding-block: clamp(72px, 10vw, 110px) clamp(40px, 6vw, 64px);
 }
 
-.marker { display: flex; align-items: center; gap: 16px; margin-bottom: 44px; }
-.markerLabel { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-text); }
-.markerRule { flex: 1; height: 1px; background: var(--line); }
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
 
 .rail { position: relative; padding-left: 32px; }
 .railLine {
@@ -1869,7 +1894,7 @@ git commit -m "feat: merge experience and education into one journey timeline"
 - Modify: `tests/sections.spec.ts` → **delete it**; create `tests/projects.spec.ts` covering only the projects assertions it used to own (the rest of `sections.spec.ts`'s assertions are already re-homed into `journey.spec.ts`/`skills.spec.ts`/etc. by their own tasks — see Task 12 for the final removal)
 
 **Interfaces:**
-- Consumes: `projects: Project[]` (unchanged shape).
+- Consumes: `projects: Project[]` (unchanged shape); the global `.marker`/`.marker-label`/`.marker-rule` classes from Task 1.
 - Produces: index-numbered rows inside `section#projects`.
 
 - [ ] **Step 1: Write the failing test**
@@ -2073,9 +2098,9 @@ import styles from './Projects.module.css'
 export default function Projects() {
   return (
     <section id="projects" className={`${styles.section} wrap`}>
-      <div className={`${styles.marker} reveal`}>
-        <span className={styles.markerLabel}>// 02_projects</span>
-        <span className={styles.markerRule} />
+      <div className="marker reveal">
+        <span className="marker-label">// 02_projects</span>
+        <span className="marker-rule" />
       </div>
       {projects.map((project, i) => (
         <ProjectRow key={project.name} project={project} index={i} />
@@ -2092,9 +2117,8 @@ Replace `components/Projects.module.css`:
   padding-block: clamp(56px, 8vw, 96px) clamp(40px, 6vw, 64px);
 }
 
-.marker { display: flex; align-items: center; gap: 16px; margin-bottom: 44px; }
-.markerLabel { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-text); }
-.markerRule { flex: 1; height: 1px; background: var(--line); }
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
 ```
 
 - [ ] **Step 6: Run the test and verify it passes**
@@ -2119,7 +2143,7 @@ git commit -m "feat: rebuild projects as index-numbered rows"
 - Create: `tests/skills.spec.ts`
 
 **Interfaces:**
-- Consumes: `skills: SkillGroup[]` (unchanged shape — `lead` count splits "loud" vs. "quiet" chips, as before).
+- Consumes: `skills: SkillGroup[]` (unchanged shape — `lead` count splits "loud" vs. "quiet" chips, as before); the global `.marker`/`.marker-label`/`.marker-rule` classes from Task 1.
 - Produces: `section#skills`.
 
 - [ ] **Step 1: Write the failing test**
@@ -2167,9 +2191,9 @@ import styles from './Skills.module.css'
 export default function Skills() {
   return (
     <section id="skills" className={`${styles.section} wrap`}>
-      <div className={`${styles.marker} reveal`}>
-        <span className={styles.markerLabel}>// 03_skills</span>
-        <span className={styles.markerRule} />
+      <div className="marker reveal">
+        <span className="marker-label">// 03_skills</span>
+        <span className="marker-rule" />
       </div>
       <div className={styles.grid}>
         {skills.map((group, i) => {
@@ -2210,9 +2234,8 @@ export default function Skills() {
   padding-block: clamp(56px, 8vw, 96px) clamp(40px, 6vw, 64px);
 }
 
-.marker { display: flex; align-items: center; gap: 16px; margin-bottom: 44px; }
-.markerLabel { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-text); }
-.markerRule { flex: 1; height: 1px; background: var(--line); }
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
 
 .grid {
   display: grid;
@@ -2279,7 +2302,7 @@ git commit -m "feat: restyle skills chips and retire SectionLabel"
 - Create: `tests/now.spec.ts`
 
 **Interfaces:**
-- Consumes: nothing beyond `content.ts`.
+- Consumes: nothing beyond `content.ts`; the global `.marker`/`.marker-label`/`.marker-rule` classes from Task 1.
 - Produces: `now: NowEntry[]` (`{ tag: string; text: string }`), `section#now`.
 
 - [ ] **Step 1: Update `content.ts`**
@@ -2347,9 +2370,9 @@ import styles from './Now.module.css'
 export default function Now() {
   return (
     <section id="now" className={`${styles.section} wrap`}>
-      <div className={`${styles.marker} reveal`}>
-        <span className={styles.markerLabel}>// 04_now</span>
-        <span className={styles.markerRule} />
+      <div className="marker reveal">
+        <span className="marker-label">// 04_now</span>
+        <span className="marker-rule" />
       </div>
       {now.map((entry, i) => (
         <div
@@ -2373,9 +2396,8 @@ export default function Now() {
   padding-block: clamp(40px, 6vw, 64px);
 }
 
-.marker { display: flex; align-items: center; gap: 16px; margin-bottom: 44px; }
-.markerLabel { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-text); }
-.markerRule { flex: 1; height: 1px; background: var(--line); }
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
 
 .row {
   display: flex;
@@ -2458,7 +2480,7 @@ git commit -m "feat: add the now section"
 - Create: `tests/contact.spec.ts`
 
 **Interfaces:**
-- Consumes: `site.email`, `site.location`, `site.availability`, `site.resumeHref`, `site.linkedin`, `site.github`, `site.name`.
+- Consumes: `site.email`, `site.location`, `site.availability`, `site.resumeHref`, `site.linkedin`, `site.github`, `site.name`; the global `.outline-pill` class from Task 1.
 - Produces: `section#contact` as the final section.
 
 - [ ] **Step 1: Write the failing test**
@@ -2515,7 +2537,7 @@ export default function Contact() {
   return (
     <section id="contact" className={`${styles.contact} reveal`}>
       <div className={`${styles.inner} wrap`}>
-        <span className={styles.marker}>// 05_contact</span>
+        <span className={styles.eyebrow}>// 05_contact</span>
         <h2 className={styles.headline}>Let&apos;s build something that stays up.</h2>
         <div className={styles.emailRow}>
           <a className={styles.email} href={`mailto:${site.email}`}>
@@ -2526,10 +2548,10 @@ export default function Contact() {
           <a className={styles.resumeCta} href={site.resumeHref} download>
             Download Résumé
           </a>
-          <a className={styles.outlineCta} href={site.linkedin} target="_blank" rel="noreferrer">
+          <a className="outline-pill" href={site.linkedin} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
-          <a className={styles.outlineCta} href={site.github} target="_blank" rel="noreferrer">
+          <a className="outline-pill" href={site.github} target="_blank" rel="noreferrer">
             GitHub
           </a>
         </div>
@@ -2558,7 +2580,7 @@ export default function Contact() {
 
 .inner { display: flex; flex-direction: column; gap: 32px; }
 
-.marker { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-2-text); }
+.eyebrow { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-2-text); }
 
 .headline {
   font-size: var(--t-display);
@@ -2600,22 +2622,8 @@ export default function Contact() {
 
 .resumeCta:hover { transform: translateY(-2px); opacity: .9; }
 
-.outlineCta {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  padding: 12px 20px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  transition: color var(--dur-hover) ease;
-}
-
-.outlineCta:hover { color: var(--ink); }
+/* LinkedIn/GitHub buttons use the shared .outline-pill global class from
+   app/globals.css (Task 1) — no local rule needed here. */
 
 .footRow {
   display: flex;
