@@ -5,7 +5,7 @@ export default function Contact() {
   return (
     <section id="contact" className={`${styles.contact} reveal`}>
       <div className={`${styles.inner} wrap`}>
-        <span className={styles.eyebrow}>// 05_contact</span>
+        <span className={styles.eyebrow}>{'// 05_contact'}</span>
         <h2 className={styles.headline}>Let&apos;s build something that stays up.</h2>
         <div className={styles.emailRow}>
           <a className={styles.email} href={`mailto:${site.email}`}>

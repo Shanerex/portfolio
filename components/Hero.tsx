@@ -82,6 +82,8 @@ export default function Hero() {
           </div>
         </div>
 
+        {/* Static-export build: next/image needs unoptimized mode (no benefit); w/h attrs already prevent CLS. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className={`${styles.photo} reveal`}
           style={{ transitionDelay: '0ms' }}

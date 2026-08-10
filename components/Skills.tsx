@@ -5,7 +5,7 @@ export default function Skills() {
   return (
     <section id="skills" className={`${styles.section} wrap`}>
       <div className="marker reveal">
-        <span className="marker-label">// 03_skills</span>
+        <span className="marker-label">{'// 03_skills'}</span>
         <span className="marker-rule" />
       </div>
       <div className={styles.grid}>

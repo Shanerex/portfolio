@@ -10,8 +10,10 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
-    const current = document.documentElement.getAttribute('data-theme')
-    setTheme(current === 'light' ? 'light' : 'dark')
+    // Hydration sync: layout.tsx's inline script sets data-theme pre-render; a lazy
+    // initializer would re-read it during hydration and mismatch the server HTML.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark')
   }, [])
 
   function toggle() {

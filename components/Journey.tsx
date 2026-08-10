@@ -5,7 +5,7 @@ export default function Journey() {
   return (
     <section id="journey" className={`${styles.section} wrap`}>
       <div className="marker reveal">
-        <span className="marker-label">// 01_journey</span>
+        <span className="marker-label">{'// 01_journey'}</span>
         <span className="marker-rule" />
       </div>
       <div className={styles.rail}>
