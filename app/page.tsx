@@ -7,7 +7,7 @@ import About from '@/components/About'
 import Contact from '@/components/Contact'
 import ScrollEffects from '@/components/ScrollEffects'
 import Hero from '@/components/Hero'
-import ImpactBand from '@/components/ImpactBand'
+import StatusBand from '@/components/StatusBand'
 
 export default function Home() {
   return (
@@ -16,7 +16,7 @@ export default function Home() {
       <Header />
       <main className="content">
         <Hero />
-        <ImpactBand />
+        <StatusBand />
         <Intro />
         <Experience />
         <Projects />
