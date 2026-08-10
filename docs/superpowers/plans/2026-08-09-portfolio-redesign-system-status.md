@@ -21,6 +21,7 @@
 - **The header keeps a fixed dark glass background in both page themes** (`rgba(20,20,26,.82)` + `blur(10px)`), per the handoff's own literal (non-themed) value. Because of this, `Header.module.css` defines its own non-swapping colour variables scoped to `.header` (always the dark-mode ink/line/accent values) rather than using the page's theme-swapping tokens — otherwise light-theme ink (`#14141A`, near-black) would render on the header's near-black background and fail contrast. This is a deliberate, tested exception; do not "fix" it to use `var(--ink)` directly. The same reasoning extends to `:focus-visible` — the global `outline: 2px solid var(--ink)` rule (`app/globals.css`) goes near-invisible on the header's near-black background in light theme, so `Header.module.css` also needs its own `:focus-visible` override using `var(--h-ink)` for every interactive element inside `.header`.
 - **`content.ts` is the only file holding copy, with one deliberate exception:** the header wordmark text ("shane@dev_") is branding/chrome, not content — like a logo would be — and may be hardcoded directly in `Header.tsx` and asserted as a literal string in its test. This is the sole exception; every other user-visible string (nav labels, bullets, metrics, etc.) still comes from `content.ts` and tests still derive their assertions from it, never from hardcoded literals.
 - **Every interactive target meets ≥44px in at least one dimension, including where a design value is smaller.** `ThemeToggle`'s visible circle is 36px (exact fidelity to the handoff's literal spec) — its actual clickable/tappable hit area must still be expanded to ≥44×44px (padding or an equivalent hit-area technique), without changing the 36px visual size.
+- **The hero's mock terminal card must not duplicate `site.metrics` as separate literals.** Its `"reliability"` and `"throughput"` JSON fields restate numbers already tracked in `site.metrics` (labels `"delivery reliability"` and `"requests a day"`) — derive both by `site.metrics.find(...)`, don't hardcode them a second time (real drift risk: the metrics could change in `content.ts` without the terminal card following). `"p95_latency"` (`"<1s"`) has no existing `content.ts` source and stays a literal — same reasoning as the wordmark exception above.
 - **Exact token values are defined in Task 1** and must be used verbatim thereafter — see the palette/type tables in `docs/superpowers/specs/2026-08-09-portfolio-redesign-system-status-design.md`.
 - **Accessibility floor:** zero axe violations in both themes, visible keyboard focus (`:focus-visible`), `prefers-reduced-motion` fully respected, interactive targets ≥44px in at least one dimension.
 - **Intermediate test redness is expected and scoped.** Several pre-existing spec files (`rail`, `hero`, `impact`, `sections`, `reveal`, `responsive`, `a11y`, `court`) assert against tennis-era structure this plan retires piece by piece. Each task states exactly which spec file(s) it owns and turns green; a stale spec file for a component not yet migrated may still fail until its own task lands. The final task (Task 12) runs the complete suite and is the actual "done" gate — do not treat interim red tests in not-yet-touched files as a regression to chase down early.
@@ -1026,7 +1027,8 @@ test('hero shows the headshot and the health-check terminal card', async ({ page
 
   const card = page.locator('[data-testid="terminal-card"]')
   await expect(card).toContainText('health-check.sh')
-  await expect(card).toContainText('99.99%')
+  const reliability = site.metrics.find((m) => m.label === 'delivery reliability')!.figure
+  await expect(card).toContainText(reliability)
 })
 
 test('CTA row links to email, LinkedIn and GitHub safely', async ({ page }) => {
@@ -1064,6 +1066,9 @@ Expected: FAIL — no headshot `<img>`, no terminal card, old hero markup doesn'
 ```tsx
 import { site } from '@/content'
 import styles from './Hero.module.css'
+
+const reliability = site.metrics.find((m) => m.label === 'delivery reliability')!.figure
+const throughput = site.metrics.find((m) => m.label === 'requests a day')!.figure
 
 export default function Hero() {
   return (
@@ -1130,10 +1135,10 @@ export default function Hero() {
                 &nbsp;&nbsp;&quot;status&quot;: <span className={styles.terminalVal}>&quot;ok&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
-                &nbsp;&nbsp;&quot;reliability&quot;: <span className={styles.terminalVal}>&quot;99.99%&quot;</span>,
+                &nbsp;&nbsp;&quot;reliability&quot;: <span className={styles.terminalVal}>&quot;{reliability}&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
-                &nbsp;&nbsp;&quot;throughput&quot;: <span className={styles.terminalVal}>&quot;300k+/day&quot;</span>,
+                &nbsp;&nbsp;&quot;throughput&quot;: <span className={styles.terminalVal}>&quot;{throughput.toLowerCase()}/day&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
                 &nbsp;&nbsp;&quot;p95_latency&quot;: <span className={styles.terminalVal}>&quot;&lt;1s&quot;</span>
