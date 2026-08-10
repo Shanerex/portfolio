@@ -1,34 +1,66 @@
 .contact {
-  background: var(--court);
-  color: var(--on-court);
-  padding-block: var(--s-9);
-  margin-top: var(--s-9);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-block: clamp(64px, 10vw, 120px);
 }
 
-.inner { display: flex; flex-direction: column; gap: var(--s-4); }
+.inner { display: flex; flex-direction: column; gap: 32px; }
 
-.email {
-  font-family: var(--font-display);
-  font-variation-settings: 'wdth' 100, 'wght' 700;
+.eyebrow { font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; color: var(--accent-2-text); }
+
+.headline {
   font-size: var(--t-display);
   line-height: var(--lh-display);
   letter-spacing: var(--ls-display);
-  color: var(--on-court);
-  border-bottom: 2px solid var(--ball);
-  padding-bottom: var(--s-2);
-  align-self: flex-start;
-  word-break: break-word;
-  transition: color var(--dur-hover) var(--ease-cut);
+  max-width: 760px;
 }
 
-.email:hover { color: var(--ball); }
+.emailRow { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
 
-.meta {
+.email {
   font-family: var(--font-mono);
-  font-size: var(--t-meta);
-  letter-spacing: .1em;
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 6px;
+  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+.email:hover { color: var(--accent-text); border-color: var(--accent-text); }
+
+.ctaRow { display: flex; flex-wrap: wrap; gap: 16px; }
+
+.resumeCta {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--on-court);
-  opacity: .8;
-  margin: 0;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--dur-hover) ease, opacity var(--dur-hover) ease;
+}
+
+.resumeCta:hover { transform: translateY(-2px); opacity: .9; }
+
+/* LinkedIn/GitHub buttons use the shared .outline-pill global class from
+   app/globals.css (Task 1) — no local rule needed here. */
+
+.footRow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  letter-spacing: .04em;
 }
