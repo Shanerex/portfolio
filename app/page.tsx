@@ -12,10 +12,10 @@ import StatusBand from '@/components/StatusBand'
 
 export default function Home() {
   return (
-    <div className="page">
+    <>
       <a id="top" />
       <Header />
-      <main className="content">
+      <main>
         <Hero />
         <StatusBand />
         <Intro />
@@ -27,6 +27,6 @@ export default function Home() {
       </main>
       <ScrollEffects />
       <ScrollTopButton />
-    </div>
+    </>
   )
 }
