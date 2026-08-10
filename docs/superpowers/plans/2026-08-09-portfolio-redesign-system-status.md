@@ -3051,11 +3051,12 @@ git commit -m "fix: clean up dead selectors and responsive edge cases"
 ### Task 12: Test suite stabilization — the real "done" gate
 
 **Files:**
-- Delete: `tests/sections.spec.ts` (fully superseded by `journey.spec.ts`, `projects.spec.ts`, `skills.spec.ts`, `now.spec.ts`, `contact.spec.ts`, `hero.spec.ts`)
 - Modify: `tests/reveal.spec.ts`
 - Modify: `tests/responsive.spec.ts`
 - Modify: `tests/a11y.spec.ts`
 - Modify: `content.ts` (finally remove the unused `about` export and `Link` type if `Link` still lingers — re-check, Task 2 should have already removed `Link`)
+
+**Note:** `tests/sections.spec.ts` was already deleted in Task 6 (it needed to go as part of rewriting `Projects`, ahead of schedule relative to this task's original plan) — there is nothing left to delete here. This task's remaining job on the test-suite side is narrower than originally scoped: finish removing `about` (now dead since `tests/sections.spec.ts` — its last consumer — is already gone) and rewrite the three cross-cutting integration specs below.
 
 **Interfaces:**
 - Consumes: every component and test file from Tasks 1–11.
@@ -3064,7 +3065,7 @@ git commit -m "fix: clean up dead selectors and responsive edge cases"
 - [ ] **Step 1: Confirm `about` and any stray types are dead, then remove them**
 
 Run: `grep -rn "\babout\b" content.ts tests/ components/ app/`
-Expected: only the declaration in `content.ts` and (soon-to-be-deleted) `tests/sections.spec.ts`. Delete `tests/sections.spec.ts` now, then remove the `about` export from `content.ts`.
+Expected: only the declaration in `content.ts` — `tests/sections.spec.ts` (its last consumer) was already deleted in Task 6. Remove the `about` export from `content.ts` now.
 
 Also run: `grep -rn "\bLink\b" content.ts` — if the `Link` type is still declared and unused, remove it too.
 
@@ -3323,7 +3324,6 @@ Expected: every spec file passes — `a11y`, `contact`, `header`, `hero`, `journ
 
 ```bash
 git add tests/reveal.spec.ts tests/responsive.spec.ts tests/a11y.spec.ts content.ts
-git rm tests/sections.spec.ts
 git commit -m "test: stabilize the full suite against the System Status redesign"
 ```
 
