@@ -1,9 +1,8 @@
 import Header from '@/components/Header'
 import Intro from '@/components/Intro'
-import Experience from '@/components/Experience'
+import Journey from '@/components/Journey'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
-import About from '@/components/About'
 import Contact from '@/components/Contact'
 import ScrollEffects from '@/components/ScrollEffects'
 import Hero from '@/components/Hero'
@@ -18,10 +17,9 @@ export default function Home() {
         <Hero />
         <StatusBand />
         <Intro />
-        <Experience />
+        <Journey />
         <Projects />
         <Skills />
-        <About />
         <Contact />
       </main>
       <ScrollEffects />

@@ -17,6 +17,30 @@ export type Project = {
 
 export type Metric = { figure: string; label: string }
 
+export type EducationEntry = {
+  institution: string
+  field: string
+  cgpa: string
+  note: string
+}
+
+export type JourneyEntry =
+  | {
+      kind: 'education'
+      title: string
+      subtitle: string
+      dateLabel: string
+      note: string
+    }
+  | {
+      kind: 'work'
+      title: string
+      subtitle: string
+      dateLabel: string
+      bullets: string[]
+      current: boolean
+    }
+
 export const site = {
   name: ['Shane Rex', 'Sasikumar'] as const,
   thesis: 'No dwelling on the last point.',
@@ -71,6 +95,37 @@ export const experience: ExperienceEntry[] = [
       'Raised JUnit test coverage from 75% to 88% by introducing parameterized tests and mocking strategies.',
     ],
   },
+]
+
+export const education: EducationEntry = {
+  institution: 'Thiagarajar College of Engineering',
+  field: 'Computer Science',
+  cgpa: '9.42 / 10',
+  note:
+    'Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up.',
+}
+
+export const journey: JourneyEntry[] = [
+  {
+    kind: 'education',
+    title: education.institution,
+    subtitle: `${education.field} · CGPA ${education.cgpa}`,
+    dateLabel: 'EDUCATION',
+    note: education.note,
+  },
+  ...experience
+    .slice()
+    .reverse()
+    .map(
+      (role, i, arr): JourneyEntry => ({
+        kind: 'work',
+        title: role.title,
+        subtitle: role.company,
+        dateLabel: role.dates,
+        bullets: role.bullets,
+        current: i === arr.length - 1,
+      }),
+    ),
 ]
 
 export const projects: Project[] = [
