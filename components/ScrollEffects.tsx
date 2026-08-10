@@ -1,30 +1,21 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 const REVEAL_FAILSAFE_MS = 2000
 
 export default function ScrollEffects() {
-  useEffect(() => {
-    const revealTargets = Array.from(
-      document.querySelectorAll<HTMLElement>('.reveal, .wipe'),
-    )
+  const progressRef = useRef<HTMLDivElement>(null)
 
-    // Failsafe reveals skip the fade — by the time this runs, the element
-    // has already sat unrevealed far longer than the animation is meant to
-    // be felt, so snapping straight to visible (no transition) is correct,
-    // not just expedient: it guarantees no observer/assistive tooling ever
-    // samples the DOM mid-fade at a non-AA-compliant effective contrast.
+  useEffect(() => {
+    const revealTargets = Array.from(document.querySelectorAll<HTMLElement>('.reveal'))
+
     const revealAll = () =>
       revealTargets.forEach((el) => {
         el.style.transitionDuration = '0s'
         el.classList.add('is-in')
       })
 
-    // Failsafe #2: if the observer never fires (or never finishes), show
-    // everything anyway. Content must never be stuck invisible. But if the
-    // observer has already revealed everything on its own, this timer must
-    // be a no-op rather than snapping/re-triggering anything.
     let remaining = revealTargets.length
     const failsafe = window.setTimeout(() => {
       if (remaining <= 0) return
@@ -47,29 +38,16 @@ export default function ScrollEffects() {
           }
         }
       },
-      // threshold includes 0 alongside the original 0.05: a `.wipe` target's
-      // clip-path collapses its own visible (clipped) area to zero while
-      // hidden, so a >0 threshold can only ever be crossed after the CSS
-      // clip-path has already opened — but that's driven by the very `.is-in`
-      // class this observer is responsible for adding, a deadlock a `.wipe`
-      // element can only ever escape via the 2s failsafe. Threshold 0 fires
-      // on any geometric edge crossing regardless of clipped-area ratio,
-      // breaking that deadlock; 0.05 is kept so plain `.reveal` targets keep
-      // their original 5%-visible trigger point.
-      { rootMargin: '0px 0px -8% 0px', threshold: [0, 0.05] },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
     )
     revealTargets.forEach((el) => revealObserver.observe(el))
 
     // Scroll-spy. Classes are toggled on the DOM directly rather than lifted
-    // into React state, so Sidebar stays a server component.
+    // into React state, so Header stays a server component.
     const navLinks = new Map<string, HTMLAnchorElement>()
     document
       .querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]')
       .forEach((a) => navLinks.set(a.getAttribute('href')!.slice(1), a))
-    // Only sections with a corresponding nav entry participate in scroll-spy.
-    // Contact (added after About) is a closing section with no nav link, so
-    // it must never be treated as the "last section" for spy/bottom-fallback
-    // purposes — doing so would strand aria-current with no matching link.
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>('main section[id]'),
     ).filter((s) => navLinks.has(s.id))
@@ -88,7 +66,6 @@ export default function ScrollEffects() {
           if (entry.isIntersecting) visible.add(entry.target.id)
           else visible.delete(entry.target.id)
         }
-        // Pick the first section in document order that is currently in view.
         const active = sections.find((s) => visible.has(s.id))
         if (active) setActive(active.id)
       },
@@ -96,21 +73,21 @@ export default function ScrollEffects() {
     )
     sections.forEach((s) => spyObserver.observe(s))
 
-    // Bottom-of-document fallback. The -40%/-55% band above is a viewport-
-    // relative detection zone: depending on viewport height and how much
-    // total scrollable content there is, that band can end up positioned
-    // such that it never actually reaches the last section(s), even once
-    // the user has scrolled all the way to the bottom of the page. When
-    // that happens, force the last section (last in site.nav / document
-    // order) to be marked active — scrolled-to-bottom is an unambiguous
-    // signal that the final section is "in view" regardless of what the
-    // observer's band currently reports.
     let scrollTick = false
-    const checkBottom = () => {
+    const tick = () => {
       scrollTick = false
+
+      // Progress bar
+      if (progressRef.current) {
+        const h = document.documentElement
+        const height = h.scrollHeight - h.clientHeight
+        const pct = height > 0 ? (h.scrollTop / height) * 100 : 0
+        progressRef.current.style.width = pct + '%'
+      }
+
+      // Bottom-of-document scroll-spy fallback — see below.
       const atBottom =
-        window.scrollY + window.innerHeight >=
-        document.documentElement.scrollHeight - 2
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
       if (atBottom && sections.length > 0) {
         setActive(sections[sections.length - 1].id)
       }
@@ -118,12 +95,10 @@ export default function ScrollEffects() {
     const onScroll = () => {
       if (scrollTick) return
       scrollTick = true
-      window.requestAnimationFrame(checkBottom)
+      window.requestAnimationFrame(tick)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
-    // Cover the case where the page loads already scrolled to the bottom
-    // (e.g. reload with scroll restoration).
-    checkBottom()
+    tick()
 
     return () => {
       window.clearTimeout(failsafe)
@@ -133,5 +108,19 @@ export default function ScrollEffects() {
     }
   }, [])
 
-  return null
+  return (
+    <div
+      ref={progressRef}
+      data-testid="scroll-progress"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        height: '3px',
+        width: '0%',
+        background: 'var(--primary)',
+        zIndex: 100,
+      }}
+    />
+  )
 }
