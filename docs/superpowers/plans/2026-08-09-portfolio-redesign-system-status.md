@@ -18,7 +18,9 @@
 - **Assets already committed:** `public/headshot.jpg` (720×720, square) and `public/resume.pdf`. Reference them as `/headshot.jpg` and `site.resumeHref` (`/resume.pdf`) — do not re-copy or re-crop them.
 - **Theme attribute values are `dark` and `light`** on `<html data-theme>`, persisted to `localStorage['srs-theme']`. Unlike the outgoing tennis theme, there is no legacy-value migration — `dark`/`light` are the only values that have ever existed for this key once this ships.
 - **Accent lead is fixed to lime** (`#D6F23C` dark-mode accent-text, `#5C6B12` light-mode accent-text). There is no runtime accent-lead toggle — that was a design-canvas preview affordance only, not a shipped feature.
-- **The header keeps a fixed dark glass background in both page themes** (`rgba(20,20,26,.82)` + `blur(10px)`), per the handoff's own literal (non-themed) value. Because of this, `Header.module.css` defines its own non-swapping colour variables scoped to `.header` (always the dark-mode ink/line/accent values) rather than using the page's theme-swapping tokens — otherwise light-theme ink (`#14141A`, near-black) would render on the header's near-black background and fail contrast. This is a deliberate, tested exception; do not "fix" it to use `var(--ink)` directly.
+- **The header keeps a fixed dark glass background in both page themes** (`rgba(20,20,26,.82)` + `blur(10px)`), per the handoff's own literal (non-themed) value. Because of this, `Header.module.css` defines its own non-swapping colour variables scoped to `.header` (always the dark-mode ink/line/accent values) rather than using the page's theme-swapping tokens — otherwise light-theme ink (`#14141A`, near-black) would render on the header's near-black background and fail contrast. This is a deliberate, tested exception; do not "fix" it to use `var(--ink)` directly. The same reasoning extends to `:focus-visible` — the global `outline: 2px solid var(--ink)` rule (`app/globals.css`) goes near-invisible on the header's near-black background in light theme, so `Header.module.css` also needs its own `:focus-visible` override using `var(--h-ink)` for every interactive element inside `.header`.
+- **`content.ts` is the only file holding copy, with one deliberate exception:** the header wordmark text ("shane@dev_") is branding/chrome, not content — like a logo would be — and may be hardcoded directly in `Header.tsx` and asserted as a literal string in its test. This is the sole exception; every other user-visible string (nav labels, bullets, metrics, etc.) still comes from `content.ts` and tests still derive their assertions from it, never from hardcoded literals.
+- **Every interactive target meets ≥44px in at least one dimension, including where a design value is smaller.** `ThemeToggle`'s visible circle is 36px (exact fidelity to the handoff's literal spec) — its actual clickable/tappable hit area must still be expanded to ≥44×44px (padding or an equivalent hit-area technique), without changing the 36px visual size.
 - **Exact token values are defined in Task 1** and must be used verbatim thereafter — see the palette/type tables in `docs/superpowers/specs/2026-08-09-portfolio-redesign-system-status-design.md`.
 - **Accessibility floor:** zero axe violations in both themes, visible keyboard focus (`:focus-visible`), `prefers-reduced-motion` fully respected, interactive targets ≥44px in at least one dimension.
 - **Intermediate test redness is expected and scoped.** Several pre-existing spec files (`rail`, `hero`, `impact`, `sections`, `reveal`, `responsive`, `a11y`, `court`) assert against tennis-era structure this plan retires piece by piece. Each task states exactly which spec file(s) it owns and turns green; a stale spec file for a component not yet migrated may still fail until its own task lands. The final task (Task 12) runs the complete suite and is the actual "done" gate — do not treat interim red tests in not-yet-touched files as a regression to chase down early.
@@ -747,6 +749,18 @@ Replace `components/ThemeToggle.module.css`:
   transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
 }
 
+/* The visible circle stays 36px (exact fidelity to the design handoff), but
+   the actual hit area expands to 44px via a transparent pseudo-element so
+   the button still clears the accessibility floor's tap-target minimum. */
+.toggle {
+  position: relative;
+}
+.toggle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
 .toggle:hover {
   color: var(--h-ink);
   border-color: var(--h-ink-dim);
@@ -813,6 +827,13 @@ Create `components/Header.module.css`:
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--h-line);
   color: var(--h-ink);
+}
+
+/* The global :focus-visible rule (app/globals.css) outlines in var(--ink),
+   which goes near-invisible against this header's fixed near-black
+   background in light theme — override with the header's own light ink. */
+.header :focus-visible {
+  outline-color: var(--h-ink);
 }
 
 .wordmark {
