@@ -23,7 +23,8 @@ test('hero shows the headshot and the health-check terminal card', async ({ page
 
   const card = page.locator('[data-testid="terminal-card"]')
   await expect(card).toContainText('health-check.sh')
-  await expect(card).toContainText('99.99%')
+  const reliability = site.metrics.find((m) => m.label === 'delivery reliability')!.figure
+  await expect(card).toContainText(reliability)
 })
 
 test('CTA row links to email, LinkedIn and GitHub safely', async ({ page }) => {

@@ -1,6 +1,9 @@
 import { site } from '@/content'
 import styles from './Hero.module.css'
 
+const reliability = site.metrics.find((m) => m.label === 'delivery reliability')!.figure
+const throughput = site.metrics.find((m) => m.label === 'requests a day')!.figure
+
 export default function Hero() {
   return (
     <section id="hero" className={`${styles.hero} wrap`}>
@@ -66,10 +69,10 @@ export default function Hero() {
                 &nbsp;&nbsp;&quot;status&quot;: <span className={styles.terminalVal}>&quot;ok&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
-                &nbsp;&nbsp;&quot;reliability&quot;: <span className={styles.terminalVal}>&quot;99.99%&quot;</span>,
+                &nbsp;&nbsp;&quot;reliability&quot;: <span className={styles.terminalVal}>&quot;{reliability}&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
-                &nbsp;&nbsp;&quot;throughput&quot;: <span className={styles.terminalVal}>&quot;300k+/day&quot;</span>,
+                &nbsp;&nbsp;&quot;throughput&quot;: <span className={styles.terminalVal}>&quot;{throughput.toLowerCase()}/day&quot;</span>,
               </div>
               <div className={styles.terminalLine}>
                 &nbsp;&nbsp;&quot;p95_latency&quot;: <span className={styles.terminalVal}>&quot;&lt;1s&quot;</span>
