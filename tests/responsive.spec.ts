@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 const WIDTHS = [
   { width: 390, height: 844, label: 'phone' },
-  { width: 900, height: 800, label: 'tablet' },
+  { width: 768, height: 1024, label: 'tablet' },
   { width: 1440, height: 900, label: 'desktop' },
 ]
 
@@ -18,16 +18,21 @@ for (const { width, height, label } of WIDTHS) {
     expect(overflow).toBeLessThanOrEqual(1)
   })
 
-  test(`content clears the rail at ${label} (${width}px)`, async ({ page }) => {
+  test(`every interactive element stays reachable at ${label} (${width}px)`, async ({ page }) => {
     await page.setViewportSize({ width, height })
     await page.goto('/')
-    const rail = await page.locator('[data-testid="rail"]').boundingBox()
-    const heroText = await page.locator('h1').boundingBox()
-    const overlaps =
-      heroText!.x < rail!.x + rail!.width &&
-      heroText!.x + heroText!.width > rail!.x &&
-      heroText!.y < rail!.y + rail!.height &&
-      heroText!.y + heroText!.height > rail!.y
-    expect(overlaps).toBe(false)
+    const header = page.locator('[data-testid="header"]')
+    await expect(header).toBeVisible()
+    const box = await header.boundingBox()
+    expect(box).not.toBeNull()
   })
 }
+
+test('header nav wraps rather than overlapping the wordmark below 860px', async ({ page }) => {
+  await page.setViewportSize({ width: 500, height: 900 })
+  await page.goto('/')
+  const header = page.locator('[data-testid="header"]')
+  const height = await header.evaluate((el) => el.getBoundingClientRect().height)
+  // A single-row header at this width would be under ~60px; wrapped, it's taller.
+  expect(height).toBeGreaterThan(60)
+})

@@ -4,7 +4,7 @@
    would go near-black in light mode and fail contrast against this background. */
 .header {
   --h-ink: #EDEAE2;
-  --h-ink-dim: #8F8B84;
+  --h-ink-dim: #ADA9A3;
   --h-line: rgba(237, 234, 225, .14);
   --h-line-strong: rgba(237, 234, 225, .28);
   --h-accent: #D6F23C;

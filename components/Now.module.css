@@ -16,7 +16,7 @@
 .tag {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--ink-mute);
+  color: var(--ink-dim);
   flex: none;
   width: 90px;
 }

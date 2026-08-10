@@ -236,6 +236,3 @@ export const skills: SkillGroup[] = [
     items: ['Claude Code', 'Git', 'Apache Maven', 'IntelliJ IDEA', 'Visual Studio Code'],
   },
 ]
-
-export const about =
-  "I studied Computer Science at Thiagarajar College of Engineering and came out the other side with a 9.42 CGPA. Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up."

@@ -41,12 +41,12 @@
   text-transform: uppercase;
 }
 .status[data-status='in-progress'] { color: var(--accent-2-text); }
-.status[data-status='completed'] { color: var(--ink-mute); }
+.status[data-status='completed'] { color: var(--ink-dim); }
 
 .stack {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--ink-mute);
+  color: var(--ink-dim);
 }
 
 .description {
