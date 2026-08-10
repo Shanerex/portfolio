@@ -1,4 +1,5 @@
 .toggle {
+  position: relative;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -12,6 +13,15 @@
   padding: 0;
   flex: none;
   transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
+}
+
+/* Visible circle stays exactly 36px (exact fidelity to the design handoff);
+   this pseudo-element enlarges only the hit-testable box to the 44x44px
+   accessibility floor without changing anything visible. */
+.toggle::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
 }
 
 .toggle:hover {

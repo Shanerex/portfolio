@@ -38,3 +38,23 @@ test('header text stays readable against its fixed-dark background in both page 
     expect(color).toBe('rgb(237, 234, 226)')
   }
 })
+
+test('header focus ring stays visible in light theme, using the header\'s own light ink', async ({ page }) => {
+  await page.goto('/')
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'))
+
+  // The wordmark link is the first tabbable element on the page.
+  await page.keyboard.press('Tab')
+  const focused = page.locator('[data-testid="header"] a').first()
+  await expect(focused).toBeFocused()
+
+  const outline = await focused.evaluate((el) => {
+    const cs = getComputedStyle(el)
+    return { style: cs.outlineStyle, color: cs.outlineColor }
+  })
+  expect(outline.style).toBe('solid')
+  // Must resolve to --h-ink (rgb(237, 234, 226)), never light theme's --ink
+  // (rgb(20, 20, 26)), which would be invisible against the header's fixed
+  // near-black background.
+  expect(outline.color).toBe('rgb(237, 234, 226)')
+})

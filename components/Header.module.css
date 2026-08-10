@@ -95,3 +95,10 @@
   border-color: var(--h-accent);
   color: var(--h-accent);
 }
+
+/* The global :focus-visible outline uses --ink, which goes near-black in
+   light theme — invisible against this header's fixed near-black background.
+   Force the header's own light --h-ink for any focused element inside it. */
+.header :focus-visible {
+  outline-color: var(--h-ink);
+}

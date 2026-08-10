@@ -84,3 +84,22 @@ test('toggle switches the theme and persists it across reload', async ({ browser
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   await ctx.close()
 })
+
+test('toggle keeps its 36px visible circle but exposes a >=44px hit area', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+  const button = page.getByRole('button', { name: /mode/i })
+  const box = await button.boundingBox()
+  // The visible circle stays exactly 36px — exact fidelity to the design handoff.
+  expect(box!.width).toBe(36)
+  expect(box!.height).toBe(36)
+
+  // The `::before { inset: -4px }` pseudo-element extends the clickable box
+  // 4px past every edge (36 + 4 + 4 = 44px), without changing anything
+  // visible. Click 2px outside the visible circle — inside that extended hit
+  // area but outside the circle itself — and confirm the click still lands
+  // on the button rather than passing through to whatever's behind it.
+  await page.mouse.click(box!.x - 2, box!.y + box!.height / 2)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+})
