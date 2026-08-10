@@ -1,6 +1,10 @@
 /** Relative luminance per WCAG 2.1, exact sRGB piecewise formula. */
 export function relativeLuminance(hex: string): number {
-  const n = hex.replace('#', '')
+  let n = hex.replace('#', '')
+  // Expand 3-digit hex to 6-digit
+  if (n.length === 3) {
+    n = n.split('').map((c) => c + c).join('')
+  }
   const channels = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255)
   const linear = channels.map((c) =>
     c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4),

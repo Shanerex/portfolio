@@ -6,14 +6,12 @@ import Skills from '@/components/Skills'
 import About from '@/components/About'
 import Contact from '@/components/Contact'
 import ScrollEffects from '@/components/ScrollEffects'
-import CourtLines from '@/components/CourtLines'
 import Hero from '@/components/Hero'
 import ImpactBand from '@/components/ImpactBand'
 
 export default function Home() {
   return (
     <div className="page">
-      <CourtLines />
       <Rail />
       <main className="content">
         <Hero />

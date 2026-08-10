@@ -1,25 +1,25 @@
 import type { Metadata } from 'next'
-import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
+import { Bricolage_Grotesque, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-const archivo = Archivo({
+const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
-  variable: '--font-archivo',
+  weight: ['700'],
+  variable: '--font-bricolage',
   display: 'swap',
-  axes: ['wdth'],
 })
 
 const plexSans = IBM_Plex_Sans({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '500', '600'],
   variable: '--font-plex-sans',
   display: 'swap',
 })
 
-const plexMono = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-plex-mono',
+  weight: ['400', '500', '600'],
+  variable: '--font-jetbrains',
   display: 'swap',
 })
 
@@ -33,12 +33,10 @@ const themeScript = `
 (function () {
   try {
     var stored = localStorage.getItem('srs-theme')
-    if (stored === 'light') stored = 'day'
-    if (stored === 'dark') stored = 'night'
-    var theme = stored === 'day' || stored === 'night' ? stored : 'night'
+    var theme = stored === 'light' || stored === 'dark' ? stored : 'dark'
     document.documentElement.setAttribute('data-theme', theme)
   } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'night')
+    document.documentElement.setAttribute('data-theme', 'dark')
   }
 })()
 `
@@ -52,15 +50,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
+      className={`${bricolage.variable} ${plexSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
-          <style>{`
-    .reveal { opacity: 1 !important; transform: none !important; }
-    .wipe { clip-path: none !important; }
-  `}</style>
+          <style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style>
         </noscript>
       </head>
       <body>{children}</body>

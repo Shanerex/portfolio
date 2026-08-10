@@ -1,185 +1,154 @@
-/* ============ Redesign tokens ============ */
 :root {
   /* Type */
-  --t-hero:    clamp(44px, 9vw, 132px);   --lh-hero: .92;   --ls-hero: -.04em;
-  --t-display: clamp(28px, 4vw, 46px);    --lh-display: 1.05; --ls-display: -.025em;
-  --t-metric:  clamp(22px, 3.2vw, 38px);
-  --t-h3:      20px;   --lh-h3: 1.3;
-  --t-h4:      17px;   --lh-h4: 1.3;
-  --t-lede:    clamp(19px, 2.2vw, 24px);  --lh-lede: 1.6;
-  --t-body:    16px;   --lh-body: 1.7;
-  --t-sm:      14.5px; --lh-sm: 1.6;
-  --t-label:   12px;   --ls-label: .2em;
-  --t-meta:    12.5px;
+  --t-hero: clamp(52px, 9.5vw, 132px); --lh-hero: .94; --ls-hero: -.025em;
+  --t-display: clamp(36px, 6vw, 72px); --lh-display: 1; --ls-display: -.02em;
+  --t-metric: clamp(30px, 4.5vw, 46px);
+  --t-h2: clamp(20px, 2.4vw, 26px);
+  --t-h3: clamp(22px, 2.4vw, 28px);
+  --t-blurb: clamp(18px, 2.1vw, 22px);
+  --t-lede: 17px; --lh-lede: 1.7;
+  --t-body: 15px; --lh-body: 1.6;
+  --t-sm: 14.5px; --lh-sm: 1.6;
+  --t-label: 12px; --ls-label: .1em;
+  --t-nav: 12px;
+  --t-meta: 12.5px;
 
   /* Spacing */
-  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;  --s-5: 24px; --s-6: 32px;
-  --s-7: 48px; --s-8: 64px;  --s-9: 96px; --s-10: 128px; --s-11: 176px;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
 
   /* Layout */
   --page-max: 1280px;
-  --gutter:   clamp(20px, 4vw, 56px);
-  --col-gap:  clamp(16px, 2.5vw, 32px);
-  --rail-w:   clamp(112px, 10vw, 168px);
+  --gutter: clamp(20px, 4vw, 56px);
 
   /* Motion */
-  --ease-cut:  cubic-bezier(.2, .9, .25, 1);
-  --ease-wipe: cubic-bezier(.65, 0, .35, 1);
-  --dur-cut:   380ms;
-  --dur-wipe:  700ms;
-  --dur-hover: 250ms;
-  --dur-theme: 450ms;
+  --dur-reveal: .7s;
+  --dur-hover: .2s;
+  --dur-theme: .3s;
 
   /* Fonts */
-  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
   --font-body: var(--font-plex-sans), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   /* Radius */
   --radius-pill: 99px;
+  --radius-card: 10px;
 }
 
 :root,
-[data-theme='night'] {
+[data-theme='dark'] {
   color-scheme: dark;
-  --surround:    #060A11;
-  --court:       #0F3A63;
-  --court-tint:  #0A2440;
-  --ink:         #EEF3F8;
-  --line-2:      #9DB0C6;
-  --meta:        #6E839B;
-  --ball:        #DCF24B;
-  --ball-ink:    #DCF24B;
-  --on-court:    #EEF3F8;
-  --flood:       rgba(255, 247, 225, .16);
-  --rule:        rgba(238, 243, 248, .16);
-  --rule-strong: rgba(238, 243, 248, .30);
+  --bg: #14141A;
+  --surface: #1B1B21;
+  --ink: #EDEAE2;
+  --ink-dim: #8F8B84;
+  --ink-mute: #5E5B56;
+  --line: rgba(237, 234, 225, .14);
+  --line-strong: rgba(237, 234, 225, .28);
+  --accent-text: #D6F23C;
+  --accent-2-text: #FF5A4E;
+  --primary: #D6F23C;
+  --primary-ink: #1C210A;
 }
 
-[data-theme='day'] {
+[data-theme='light'] {
   color-scheme: light;
-  --surround:    #EAEDF1;
-  --court:       #1F5A93;
-  --court-tint:  #3E7CB8;
-  --ink:         #0C1A2A;
-  --line-2:      #3C4E63;
-  --meta:        #56677D;
-  --ball:        #DCF24B;
-  --ball-ink:    #55670A;
-  --on-court:    #F7F9FB;
-  --flood:       rgba(255, 250, 235, .70);
-  --rule:        rgba(12, 26, 42, .14);
-  --rule-strong: rgba(12, 26, 42, .28);
+  --bg: #F6F4EF;
+  --surface: #FFFFFF;
+  --ink: #14141A;
+  --ink-dim: #5B574F;
+  --ink-mute: #8C877D;
+  --line: rgba(20, 20, 26, .12);
+  --line-strong: rgba(20, 20, 26, .24);
+  --accent-text: #5C6B12;
+  --accent-2-text: #B23327;
+  --primary: #D6F23C;
+  --primary-ink: #1C210A;
 }
 
 /* ---------- Base ---------- */
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  background: var(--surround);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--rule) 0px,
-    var(--rule) 1px,
-    transparent 1px,
-    transparent 88px
-  );
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--t-body);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   transition: background var(--dur-theme) ease, color var(--dur-theme) ease;
+  overflow-x: hidden;
 }
 
-/* ---------- Rail space reservation ---------- */
-body { padding-bottom: 56px; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; margin: 0; }
 
-@media (min-width: 1024px) {
-  body { padding-bottom: 0; padding-left: var(--rail-w); }
-}
-
-a { color: var(--ink); text-decoration: none; }
-a:hover { color: var(--line-2); }
-h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0; }
-
-html {
-  scroll-behavior: smooth;
-}
-
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 
 /* ---------- Scroll reveal (JS adds .is-in via IntersectionObserver) ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity var(--dur-cut) var(--ease-cut), transform var(--dur-cut) var(--ease-cut);
+  transform: translateY(16px);
+  transition: opacity var(--dur-reveal) ease, transform var(--dur-reveal) ease;
 }
 .reveal.is-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* ---------- Wipe reveal (JS adds .is-in via IntersectionObserver) ---------- */
-.wipe {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--dur-wipe) var(--ease-wipe);
-}
-
-.wipe.is-in { clip-path: inset(0 0 0 0); }
-
-@media (prefers-reduced-motion: reduce) {
-  .wipe { clip-path: none; transition: none; }
-}
-
-.content {
-  /* Width and side gutters are owned entirely by .court (see below);
-     .content itself is just a positioning context. The rail's own space
-     is reserved separately via body padding-left (see "Rail space
-     reservation" above). */
-  position: relative;
-  z-index: 1;
-}
-
-/* ---------- Focus ---------- */
-:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-/* ---------- Section rhythm ---------- */
-.section {
-  margin-top: var(--s-9);
-  padding-top: var(--s-7);
-  border-top: 1px solid var(--rule-strong);
-}
-
-.section:first-of-type {
-  margin-top: 0;
-  border-top: none;
-}
-
-/* ============ Court grid ============ */
-.court {
-  display: grid;
-  grid-template-columns: 1fr 3fr 3fr 1fr;
-  column-gap: var(--col-gap);
+/* ---------- Shared section container ---------- */
+.wrap {
   max-width: var(--page-max);
   margin: 0 auto;
   padding-inline: var(--gutter);
 }
 
-.bleed   { grid-column: 1 / -1; }
-.singles { grid-column: 2 / 4; }
-.deuce   { grid-column: 1 / 3; }
-.ad      { grid-column: 3 / -1; }
-
-@media (max-width: 1023px) {
-  .deuce, .ad { grid-column: 2 / 4; }
+/* ---------- Shared section marker ("// 0N_slug" + hairline rule) ----------
+   Used identically by Journey, Projects, Skills and Now (Tasks 5, 6, 7, 8) —
+   defined once here instead of once per component so the four don't drift. */
+.marker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 44px;
+}
+.marker-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  color: var(--accent-text);
+}
+.marker-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 
-@media (max-width: 767px) {
-  .court { grid-template-columns: 1fr; }
-  .bleed, .singles, .deuce, .ad { grid-column: 1 / -1; }
+/* ---------- Shared outline pill button ----------
+   Used identically by Hero's LinkedIn/GitHub buttons and Contact's
+   LinkedIn/GitHub buttons (Tasks 3 and 9) — same reasoning as .marker above. */
+.outline-pill {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  padding: 12px 20px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur-hover) ease, border-color var(--dur-hover) ease;
 }
+.outline-pill:hover { color: var(--ink); border-color: var(--ink-dim); }
