@@ -1,61 +1,42 @@
-/* No rules between groups — the section is already inside one, and the lead
-   lines separate the groups on their own. */
-.groups { display: flex; flex-direction: column; gap: var(--s-6); }
+.section {
+  padding-block: clamp(56px, 8vw, 96px) clamp(40px, 6vw, 64px);
+}
 
-.groupLabel {
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 36px 48px;
+}
+
+.category {
   font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: var(--t-meta);
-  letter-spacing: .08em;
+  font-size: 12px;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--meta);
-  margin: 0 0 var(--s-3);
+  color: var(--ink-dim);
+  margin-bottom: 14px;
 }
 
-.lead, .rest { display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
-/* The only place the display face is set at body scale. Sized to --t-h3 so a
-   lead skill ranks exactly with a job title, never above one. */
-.lead {
-  align-items: baseline;
-  column-gap: var(--s-4);
-  row-gap: var(--s-2);
-  font-family: var(--font-display);
-  font-variation-settings: 'wght' 700;
-  font-size: var(--t-h3);
-  line-height: var(--lh-h3);
-  letter-spacing: -.01em;
-  color: var(--ink);
+.chipLead {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--bg);
 }
 
-/* Hairline — the page's one structural device, at word scale. Trails the item
-   so a wrap reads as a continuation instead of a stray leading rule. */
-.lead li:not(:last-child) {
-  border-right: 1px solid var(--rule-strong);
-  padding-right: var(--s-4);
-}
-
-.rest {
-  align-items: baseline;
-  column-gap: var(--s-2);
-  row-gap: 2px;
-  margin-top: var(--s-3);
+.chipQuiet {
   font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--line-2);
-}
-
-/* Trails the item it follows, so a wrap never starts a line with a separator. */
-.rest li:not(:last-child)::after {
-  content: '·';
-  margin-left: var(--s-2);
-  color: var(--rule-strong);
-}
-
-/* Narrow columns wrap the lead line, which would leave a hairline dangling at
-   each line end. Stack instead — one lead skill per line, no separators needed. */
-@media (max-width: 767px) {
-  .lead { flex-direction: column; align-items: flex-start; row-gap: 3px; font-size: var(--t-h4); }
-  .lead li:not(:last-child) { border-right: none; padding-right: 0; }
+  font-size: 12.5px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-dim);
 }

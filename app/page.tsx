@@ -1,31 +1,32 @@
-import Rail from '@/components/Rail'
-import Intro from '@/components/Intro'
-import Experience from '@/components/Experience'
+import Header from '@/components/Header'
+import Journey from '@/components/Journey'
 import Projects from '@/components/Projects'
 import Skills from '@/components/Skills'
-import About from '@/components/About'
+import Credentials from '@/components/Credentials'
+import Now from '@/components/Now'
 import Contact from '@/components/Contact'
 import ScrollEffects from '@/components/ScrollEffects'
-import CourtLines from '@/components/CourtLines'
+import ScrollTopButton from '@/components/ScrollTopButton'
 import Hero from '@/components/Hero'
-import ImpactBand from '@/components/ImpactBand'
+import StatusBand from '@/components/StatusBand'
 
 export default function Home() {
   return (
-    <div className="page">
-      <CourtLines />
-      <Rail />
-      <main className="content">
+    <>
+      <a id="top" />
+      <Header />
+      <main>
         <Hero />
-        <ImpactBand />
-        <Intro />
-        <Experience />
+        <StatusBand />
+        <Journey />
         <Projects />
         <Skills />
-        <About />
+        <Credentials />
+        <Now />
         <Contact />
       </main>
       <ScrollEffects />
-    </div>
+      <ScrollTopButton />
+    </>
   )
 }

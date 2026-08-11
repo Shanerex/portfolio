@@ -1,7 +1,0 @@
-.lede {
-  font-size: var(--t-lede);
-  line-height: var(--lh-lede);
-  color: var(--line-2);
-  text-wrap: pretty;
-  margin: 0;
-}

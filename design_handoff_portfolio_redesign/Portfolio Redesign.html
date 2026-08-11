@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Shane Rex Sasikumar — Senior Software Engineer</title>
+<meta name="description" content="Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+html,body{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+*{box-sizing:border-box}
+@keyframes srsBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</helmet>
+<div id="srs-root" style="--bg:{{ theme.bg }};--surface:{{ theme.surface }};--ink:{{ theme.ink }};--ink-dim:{{ theme.inkDim }};--ink-mute:{{ theme.inkMute }};--line:{{ theme.line }};--line-strong:{{ theme.lineStrong }};--primary:{{ primary }};--primary-ink:{{ primaryInk }};--secondary:{{ secondary }};--accent-text:{{ accentText }};--accent-2-text:{{ accent2Text }};--f-display:'Bricolage Grotesque',system-ui,sans-serif;--f-body:'IBM Plex Sans',system-ui,sans-serif;--f-mono:'JetBrains Mono',ui-monospace,monospace; background:var(--bg); color:var(--ink); font-family:var(--f-body); min-height:100vh; overflow-x:hidden; position:relative; transition:background .3s ease, color .3s ease;">
+  <div ref="{{ progressRef }}" style="position:fixed; top:0; left:0; height:3px; width:0%; background:var(--primary); z-index:100;"></div>
+
+  <a id="top"></a>
+  <header style="position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:12px 24px; flex-wrap:wrap; padding:18px clamp(20px,4vw,56px); background:rgba(20,20,26,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);">
+    <a href="#top" style="font-family:var(--f-mono); font-weight:600; font-size:14px; letter-spacing:.02em; color:var(--ink); text-decoration:none; display:inline-flex; align-items:baseline;">shane<span style="color:var(--ink-mute);">@dev</span><span style="color:var(--accent-text); animation:srsBlink 1.1s steps(1) infinite; margin-left:1px;">_</span></a>
+    <nav style="display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:10px clamp(10px,1.8vw,22px); row-gap:8px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+        <a href="{{ item.href }}" style="font-family:var(--f-mono); font-size:12px; letter-spacing:.02em; color:var(--ink-dim); text-decoration:none; display:inline-flex; gap:5px;" style-hover="color:var(--ink);"><span style="color:var(--accent-text); opacity:.75;">{{ item.method }}</span>{{ item.path }}</a>
+      </sc-for>
+      <button onClick="{{ toggleTheme }}" aria-label="{{ themeToggleLabel }}" title="{{ themeToggleLabel }}" style="width:36px; height:36px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:var(--ink-dim); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; flex:none;" style-hover="color:var(--ink); border-color:var(--ink-dim);"><svg width="16" height="16" viewBox="0 0 24 24" fill="{{ bulbFill }}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.44 1 .96 1.1 1.6h4.8c.1-.64.5-1.16 1.1-1.6A6 6 0 0 0 12 3z"></path></svg></button>
+      <a href="{{ resumeHref }}" download style="font-family:var(--f-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); text-decoration:none; border:1px solid var(--line-strong); border-radius:99px; padding:9px 16px; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;" style-hover="border-color:var(--accent-text); color:var(--accent-text);">Résumé ↓</a>
+    </nav>
+  </header>
+
+  <section style="padding:clamp(56px,10vw,120px) clamp(20px,4vw,56px) clamp(64px,8vw,96px); max-width:1280px; margin:0 auto;">
+    <div style="display:flex; gap:48px; align-items:flex-start; flex-wrap:wrap-reverse;">
+    <div style="flex:1; min-width:280px;">
+    <div data-reveal style="font-family:var(--f-mono); font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-2-text); margin-bottom:22px; transition-delay:0ms;">— {{ site.thesis }}</div>
+    <h1 data-reveal style="font-family:var(--f-display); font-weight:700; font-size:clamp(52px,9.5vw,132px); line-height:.94; letter-spacing:-.025em; margin:0; max-width:1100px; text-wrap:pretty; transition-delay:90ms;">{{ site.nameLine1 }}<br>{{ site.nameLine2 }}</h1>
+    <p data-reveal style="font-family:var(--f-body); font-size:clamp(18px,2.1vw,22px); color:var(--ink-dim); max-width:640px; margin:28px 0 0; line-height:1.5; transition-delay:180ms;">{{ site.blurb }}</p>
+    <p data-reveal style="font-family:var(--f-body); font-size:17px; line-height:1.7; color:var(--ink); opacity:.86; max-width:680px; margin:26px 0 0; text-wrap:pretty; transition-delay:270ms;">{{ site.lede }}</p>
+
+    <div data-reveal style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:38px; transition-delay:360ms;">
+      <a href="{{ mailHref }}" style="font-family:var(--f-mono); font-size:13.5px; letter-spacing:.04em; background:var(--primary); color:var(--primary-ink); text-decoration:none; padding:13px 22px; border-radius:99px; font-weight:600; display:inline-flex; align-items:center; gap:8px; transition:transform .2s ease, opacity .2s ease;" style-hover="opacity:.88; transform:translateY(-2px);">{{ site.email }} ↗</a>
+      <a href="{{ site.linkedin }}" target="_blank" rel="noreferrer" style="font-family:var(--f-mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; border:1px solid var(--line-strong); border-radius:99px; padding:12px 20px;" style-hover="color:var(--ink); border-color:var(--ink-dim);">LinkedIn</a>
+      <a href="{{ site.github }}" target="_blank" rel="noreferrer" style="font-family:var(--f-mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; border:1px solid var(--line-strong); border-radius:99px; padding:12px 20px;" style-hover="color:var(--ink); border-color:var(--ink-dim);">GitHub</a>
+      <sc-if value="{{ showAvailability }}" hint-placeholder-val="{{ true }}">
+        <span style="font-family:var(--f-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-2-text); display:inline-flex; align-items:center; gap:8px; margin-left:6px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--secondary); display:inline-block;"></span>{{ site.availability }}</span>
+      </sc-if>
+    </div>
+    <div style="font-family:var(--f-mono); font-size:12.5px; color:var(--ink-mute); margin-top:16px; letter-spacing:.04em;">{{ site.location }}</div>
+
+    <div data-reveal style="margin-top:40px; max-width:460px; border:1px solid var(--line-strong); border-radius:10px; overflow:hidden; background:var(--surface); transition-delay:420ms;">
+      <div style="display:flex; align-items:center; gap:7px; padding:10px 14px; border-bottom:1px solid var(--line);">
+        <span style="width:9px;height:9px;border-radius:50%;background:#FF5A4E; opacity:.5;"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:#D6F23C; opacity:.5;"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:var(--ink-mute); opacity:.4;"></span>
+        <span style="font-family:var(--f-mono); font-size:11px; color:var(--ink-mute); margin-left:8px;">health-check.sh</span>
+      </div>
+      <div style="padding:16px 18px; font-family:var(--f-mono); font-size:12.5px; line-height:1.7;">
+        <div style="color:var(--ink-dim);">$ curl -s api/health</div>
+        <div style="color:var(--ink);">&#123;</div>
+        <div style="color:var(--ink); padding-left:16px;">"status": <span style="color:var(--accent-text);">"ok"</span>,</div>
+        <div style="color:var(--ink); padding-left:16px;">"reliability": <span style="color:var(--accent-text);">"99.99%"</span>,</div>
+        <div style="color:var(--ink); padding-left:16px;">"throughput": <span style="color:var(--accent-text);">"300k+/day"</span>,</div>
+        <div style="color:var(--ink); padding-left:16px;">"p95_latency": <span style="color:var(--accent-text);">"&lt;1s"</span></div>
+        <div style="color:var(--ink);">&#125;</div>
+      </div>
+    </div>
+    </div>
+      <image-slot id="linkedin-photo" shape="circle" placeholder="Drop your LinkedIn photo" style="width:180px; height:180px; flex:none; border:1px solid var(--line-strong);"></image-slot>
+    </div>
+  </section>
+
+  <section data-reveal style="background:var(--primary); padding:clamp(36px,5vw,56px) clamp(20px,4vw,56px);">
+    <div style="max-width:1280px; margin:0 auto;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:24px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:{{ primaryInk }}; display:inline-block; animation:srsBlink 1.4s ease-in-out infinite;"></span>
+        <span style="font-family:var(--f-mono); font-size:11.5px; letter-spacing:.1em; color:{{ primaryInk }}; opacity:.7;">system_status — live</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0;">
+        <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="4">
+          <div data-reveal style="transition-delay: calc({{ $index }} * 90ms); padding:0 24px; border-left:1px solid {{ primaryInk }}22;">
+            <div style="font-family:var(--f-mono); font-weight:600; font-size:clamp(30px,4.5vw,46px); letter-spacing:-.02em; color:{{ m.color }};">{{ m.figure }}</div>
+            <div style="font-family:var(--f-body); font-size:13.5px; color:var(--primary-ink); opacity:.75; margin-top:6px;">{{ m.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="journey" style="padding:clamp(72px,10vw,110px) clamp(20px,4vw,56px) clamp(40px,6vw,64px); max-width:1280px; margin:0 auto;">
+    <div data-reveal style="display:flex; align-items:center; gap:16px; margin-bottom:44px;">
+      <span style="font-family:var(--f-mono); font-size:13px; letter-spacing:.1em; color:var(--accent-text);">// 01_journey</span>
+      <span style="flex:1; height:1px; background:var(--line);"></span>
+    </div>
+    <div style="position:relative; padding-left:32px;">
+      <div style="position:absolute; left:5px; top:8px; bottom:8px; width:2px; background:var(--line-strong);"></div>
+      <sc-for list="{{ journey }}" as="entry" hint-placeholder-count="3">
+        <div data-reveal style="position:relative; padding-bottom:{{ entry.pb }}; transition-delay: calc({{ $index }} * 110ms);">
+          <span style="position:absolute; left:-27px; top:5px; width:12px; height:12px; border-radius:50%; background:{{ entry.dotColor }}; border:3px solid var(--bg); {{ entry.pulse }}"></span>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+            <span style="font-family:var(--f-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:3px 9px; border-radius:99px; border:1px solid var(--line-strong); color:var(--ink-mute);">{{ entry.kindLabel }}</span>
+            <sc-if value="{{ entry.current }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:var(--f-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-text);">● current</span>
+            </sc-if>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:20px; flex-wrap:wrap;">
+            <h3 style="font-family:var(--f-display); font-weight:700; font-size:clamp(20px,2.4vw,26px); margin:0; letter-spacing:-.01em;">{{ entry.title }}</h3>
+            <span style="font-family:var(--f-mono); font-size:12.5px; color:var(--ink-mute); white-space:nowrap;">{{ entry.dateLabel }}</span>
+          </div>
+          <div style="font-family:var(--f-body); font-size:15px; color:var(--ink-dim); margin-top:6px;">{{ entry.subtitle }}</div>
+          <sc-if value="{{ entry.isWork }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ entry.bullets }}" as="b" hint-placeholder-count="4">
+                <div style="display:flex; gap:12px; font-family:var(--f-body); font-size:15px; line-height:1.65; color:var(--ink); opacity:.88; max-width:780px;">
+                  <span style="color:var(--accent-2-text); flex:none;">→</span>
+                  <span>{{ b }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ entry.isEducation }}" hint-placeholder-val="{{ false }}">
+            <p style="font-family:var(--f-body); font-size:15px; line-height:1.7; color:var(--ink); opacity:.78; max-width:700px; margin:14px 0 0; text-wrap:pretty;">{{ entry.note }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="projects" style="padding:clamp(56px,8vw,96px) clamp(20px,4vw,56px) clamp(40px,6vw,64px); max-width:1280px; margin:0 auto;">
+    <div data-reveal style="display:flex; align-items:center; gap:16px; margin-bottom:44px;">
+      <span style="font-family:var(--f-mono); font-size:13px; letter-spacing:.1em; color:var(--accent-text);">// 02_projects</span>
+      <span style="flex:1; height:1px; background:var(--line);"></span>
+    </div>
+    <sc-for list="{{ projects }}" as="proj" hint-placeholder-count="3">
+      <dc-import name="ProjectRow" proj="{{ proj }}" hint-size="100%,220px" style="display:block; margin-bottom:2px;"></dc-import>
+    </sc-for>
+  </section>
+
+  <section id="skills" style="padding:clamp(56px,8vw,96px) clamp(20px,4vw,56px) clamp(40px,6vw,64px); max-width:1280px; margin:0 auto;">
+    <div data-reveal style="display:flex; align-items:center; gap:16px; margin-bottom:44px;">
+      <span style="font-family:var(--f-mono); font-size:13px; letter-spacing:.1em; color:var(--accent-text);">// 03_skills</span>
+      <span style="flex:1; height:1px; background:var(--line);"></span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:36px 48px;">
+      <sc-for list="{{ skillGroups }}" as="grp" hint-placeholder-count="5">
+        <div data-reveal style="transition-delay: calc({{ $index }} * 100ms);">
+          <div style="font-family:var(--f-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); margin-bottom:14px;">{{ grp.category }}</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ grp.chips }}" as="chip" hint-placeholder-count="4">
+              <span style="font-family:{{ chip.font }}; font-size:{{ chip.size }}; font-weight:{{ chip.weight }}; padding:{{ chip.pad }}; border-radius:99px; background:{{ chip.bg }}; color:{{ chip.color }}; border:{{ chip.border }};">{{ chip.text }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="now" style="padding:clamp(40px,6vw,64px) clamp(20px,4vw,56px) clamp(40px,6vw,64px); max-width:1280px; margin:0 auto;">
+    <div data-reveal style="display:flex; align-items:center; gap:16px; margin-bottom:44px;">
+      <span style="font-family:var(--f-mono); font-size:13px; letter-spacing:.1em; color:var(--accent-text);">// 04_now</span>
+      <span style="flex:1; height:1px; background:var(--line);"></span>
+    </div>
+    <sc-for list="{{ now }}" as="n" hint-placeholder-count="3">
+      <div data-reveal style="display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); align-items:baseline; transition-delay: calc({{ $index }} * 90ms);">
+        <span style="font-family:var(--f-mono); font-size:12px; color:var(--ink-mute); flex:none; width:90px;">{{ n.tag }}</span>
+        <span style="font-family:var(--f-body); font-size:15.5px; color:var(--ink); opacity:.88; line-height:1.6;">{{ n.text }}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section id="contact" data-reveal style="background:var(--surface); border-top:1px solid var(--line); padding:clamp(64px,10vw,120px) clamp(20px,4vw,56px);">
+    <div style="max-width:1280px; margin:0 auto; display:flex; flex-direction:column; gap:32px;">
+      <span style="font-family:var(--f-mono); font-size:13px; letter-spacing:.1em; color:var(--accent-2-text);">// 05_contact</span>
+      <h2 style="font-family:var(--f-display); font-weight:700; font-size:clamp(36px,6vw,72px); line-height:1; letter-spacing:-.02em; margin:0; max-width:760px;">Let's build something that stays up.</h2>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:18px; margin-top:8px;">
+        <a href="{{ mailHref }}" style="font-family:var(--f-mono); font-size:clamp(16px,2vw,20px); color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line-strong); padding-bottom:6px; transition:color .2s ease, border-color .2s ease;" style-hover="border-color:var(--accent-text); color:var(--accent-text);">{{ site.email }} ↗</a>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:8px;">
+        <a href="{{ resumeHref }}" download style="font-family:var(--f-mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; background:var(--primary); border-radius:99px; padding:12px 20px; color:var(--primary-ink); font-weight:600; transition:transform .2s ease, opacity .2s ease;" style-hover="transform:translateY(-2px); opacity:.9;">Download Résumé</a>
+        <a href="{{ site.linkedin }}" target="_blank" rel="noreferrer" style="font-family:var(--f-mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; border:1px solid var(--line-strong); border-radius:99px; padding:12px 20px;" style-hover="color:var(--ink);">LinkedIn</a>
+        <a href="{{ site.github }}" target="_blank" rel="noreferrer" style="font-family:var(--f-mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; border:1px solid var(--line-strong); border-radius:99px; padding:12px 20px;" style-hover="color:var(--ink);">GitHub</a>
+      </div>
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:40px; padding-top:24px; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:11.5px; color:var(--ink-mute); letter-spacing:.04em;">
+        <span>{{ site.location }} · {{ site.availability }}</span>
+        <span>© {{ year }} {{ site.nameLine1 }} {{ site.nameLine2 }}</span>
+      </div>
+    </div>
+  </section>
+
+  <button onClick="{{ scrollToTop }}" aria-label="Scroll to top" style="position:fixed; right:24px; bottom:24px; width:46px; height:46px; border-radius:50%; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); font-family:var(--f-mono); font-size:16px; cursor:pointer; display:{{ scrollTopDisplay }}; align-items:center; justify-content:center; z-index:90; box-shadow:0 6px 20px rgba(0,0,0,.25); transition:opacity .25s ease, transform .2s ease;" style-hover="transform:translateY(-3px); border-color:var(--ink-dim);">↑</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1600},&quot;accentLead&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;lime&quot;,&quot;options&quot;:[&quot;lime&quot;,&quot;coral&quot;],&quot;tsType&quot;:&quot;'lime'|'coral'&quot;},&quot;showAvailability&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;reduceMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.progressRef = React.createRef();
+    let saved = null;
+    try { saved = localStorage.getItem('srs-theme'); } catch (e) {}
+    this.state = { theme: saved === 'light' || saved === 'dark' ? saved : 'dark', showTop: false };
+    this.toggleTheme = this.toggleTheme.bind(this);
+    this.scrollToTop = this.scrollToTop.bind(this);
+  }
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  toggleTheme() {
+    this.setState(s => {
+      const next = s.theme === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem('srs-theme', next); } catch (e) {}
+      return { theme: next };
+    });
+  }
+  componentDidMount() {
+    const onScroll = () => {
+      if (!this.progressRef.current) return;
+      const h = document.documentElement;
+      const height = h.scrollHeight - h.clientHeight;
+      const pct = height > 0 ? (h.scrollTop / height) * 100 : 0;
+      this.progressRef.current.style.width = pct + '%';
+      const show = h.scrollTop > 480;
+      if (show !== this._lastShowTop) { this._lastShowTop = show; this.setState({ showTop: show }); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    this._onScroll = onScroll;
+    const root = document.getElementById('srs-root');
+    if (!root) return;
+    const els = Array.from(root.querySelectorAll('[data-reveal]'));
+    if (this.props.reduceMotion) return;
+    els.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.style.transition = 'opacity .7s ease, transform .7s ease';
+    });
+    const reveal = el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; };
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); } });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      els.forEach(el => io.observe(el));
+      this._io = io;
+    } else {
+      els.forEach(reveal);
+    }
+    this._fallback = setTimeout(() => els.forEach(reveal), 2000);
+  }
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._fallback) clearTimeout(this._fallback);
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+  }
+  renderVals() {
+    const accentLead = this.props.accentLead ?? 'lime';
+    const LIME = '#D6F23C', LIME_INK = '#1C210A';
+    const CORAL = '#FF5A4E', CORAL_INK = '#2B0B08';
+    const LIME_DARK = '#5C6B12', CORAL_DARK = '#B23327';
+    const primary = accentLead === 'coral' ? CORAL : LIME;
+    const primaryInk = accentLead === 'coral' ? CORAL_INK : LIME_INK;
+    const secondary = accentLead === 'coral' ? LIME : CORAL;
+    const isDark = this.state.theme !== 'light';
+    const accentText = isDark ? primary : (accentLead === 'coral' ? CORAL_DARK : LIME_DARK);
+    const accent2Text = isDark ? secondary : (accentLead === 'coral' ? LIME_DARK : CORAL_DARK);
+    const theme = isDark ? {
+      bg: '#14141A', surface: '#1B1B21', ink: '#EDEAE2', inkDim: '#8F8B84', inkMute: '#5E5B56',
+      line: 'rgba(237,234,225,.14)', lineStrong: 'rgba(237,234,225,.28)'
+    } : {
+      bg: '#F6F4EF', surface: '#FFFFFF', ink: '#14141A', inkDim: '#5B574F', inkMute: '#8C877D',
+      line: 'rgba(20,20,26,.12)', lineStrong: 'rgba(20,20,26,.24)'
+    };
+
+    const site = {
+      nameLine1: 'Shane Rex',
+      nameLine2: 'Sasikumar',
+      thesis: 'No dwelling on the last point.',
+      blurb: 'Senior Software Engineer building event-driven backends on Java, Spring Boot and GCP.',
+      lede: "I'm an engineer who cares as much about how I build as what I ship. By profession I build event-driven backends on Java, Spring Boot and GCP. The rest of my time keeps turning into the same question, answered differently. A rough stretch of AI-assisted coding became a spec-driven workflow, now running across my team. That workflow turned into two side builds of my own: a file upload API and a full site rebuild.",
+      location: 'Bengaluru, India',
+      availability: 'Open to new roles',
+      email: 'shanerexsasikumar@gmail.com',
+      linkedin: 'https://www.linkedin.com/in/shane-rex-sasikumar',
+      github: 'https://github.com/Shanerex',
+      about: "I studied Computer Science at Thiagarajar College of Engineering and came out the other side with a 9.42 CGPA. Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up."
+    };
+
+    const navItems = [
+      { method: 'GET', path: '/journey', href: '#journey' },
+      { method: 'GET', path: '/projects', href: '#projects' },
+      { method: 'GET', path: '/skills', href: '#skills' },
+      { method: 'GET', path: '/now', href: '#now' },
+      { method: 'POST', path: '/contact', href: '#contact' }
+    ];
+
+    const education = {
+      institution: 'Thiagarajar College of Engineering',
+      field: 'Computer Science',
+      cgpa: '9.42 / 10',
+      note: "Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up."
+    };
+
+    const now = [
+      { tag: 'AT WORK', text: 'Rolling out Spec Driven Development as the default workflow across the team.' },
+      { tag: 'BUILDING', text: 'Atlas, an in-house PIM built spec-driven end to end, deployed on GCP.' },
+      { tag: 'BUILDING', text: 'A full-stack rebuild of a marketing site with an AI RFQ concierge on Spring AI.' }
+    ];
+
+    const rawMetrics = [
+      { figure: '300K+', label: 'requests a day' },
+      { figure: '99.99%', label: 'delivery reliability' },
+      { figure: '3M+', label: 'records migrated live' },
+      { figure: '6s → 1s', label: 'API response time' }
+    ];
+    const metrics = rawMetrics.map((m, i) => ({ ...m, color: i % 2 === 0 ? primaryInk : primaryInk }));
+    // Use a lighter/darker split of primaryInk for rhythm without new colors
+    metrics.forEach((m, i) => { m.color = i % 2 === 0 ? primaryInk : (primaryInk + 'cc'); });
+
+    const journeyRaw = [
+      {
+        kind: 'education',
+        current: false,
+        title: education.institution,
+        subtitle: education.field + ' · CGPA ' + education.cgpa,
+        dateLabel: 'EDUCATION',
+        note: education.note
+      },
+      {
+        kind: 'work',
+        current: false,
+        title: 'Software Analyst',
+        subtitle: 'Bounteous x Accolite',
+        dateLabel: 'Jun 2023 — Jul 2025',
+        bullets: [
+          'Designed and built a credit management system from scratch on Spring Boot and Cloud SQL, migrating 3M+ historical transactions live with zero downtime.',
+          'Eliminated a concurrency race that handed out duplicate customer numbers at registration, wrapping ID generation in a Firestore transaction.',
+          'Automated an inventory data ingestion pipeline on Apache NiFi, eliminating 100+ hours of manual effort a month.',
+          'Built Cloud Monitoring dashboards and multi-threshold alerting across distributed Cloud Run services, improving observability and cutting MTTR.',
+          'Raised JUnit test coverage from 75% to 88% by introducing parameterized tests and mocking strategies.'
+        ]
+      },
+      {
+        kind: 'work',
+        current: true,
+        title: 'Senior Software Engineer',
+        subtitle: 'Bounteous x Accolite',
+        dateLabel: 'Aug 2025 — Present',
+        bullets: [
+          'Architected a GCP Pub/Sub pipeline ingesting 20+ webhook event types, handling 300,000+ requests a day at 99.99% delivery reliability.',
+          'Chose Pub/Sub over synchronous HTTP fanout to decouple ingestion from processing, isolating faults per event type with dead-letter queues and exponential backoff retries.',
+          'Cut order history API responses from 6-8s to under 1s by replacing direct BigQuery queries with a pre-aggregated SQL Server store, fed by a Dataflow/Beam streaming pipeline.',
+          'Owned end-to-end migration of 400,000+ customer records to a new platform, with zero downtime and no data loss.',
+          'Introduced and drove team-wide adoption of a Spec Driven Development workflow, cutting development time 30-50% against estimates.',
+          'Diagnosed and resolved a production data integrity incident, reconciling 35,000 incorrect debits and restoring 20,000 missing cancellation credits with zero customer escalations.'
+        ]
+      }
+    ];
+    const journey = journeyRaw.map((e, i) => ({
+      ...e,
+      isWork: e.kind === 'work',
+      isEducation: e.kind === 'education',
+      kindLabel: e.kind === 'work' ? 'WORK' : 'EDUCATION',
+      dotColor: e.kind === 'education' ? 'var(--ink-mute)' : 'var(--accent-text)',
+      pulse: e.current ? 'animation:srsBlink 1.4s ease-in-out infinite;' : '',
+      pb: i === journeyRaw.length - 1 ? '0px' : '44px'
+    }));
+
+    const rawProjects = [
+      {
+        name: 'cryptouijc',
+        stack: 'Kotlin · Jetpack Compose',
+        status: 'completed',
+        description: [
+          'Crypto trading app UI cloned in Jetpack Compose: home, prices, portfolio, trade, transaction and settings screens.',
+          'Bottom navigation ties the screens together, plus a coin detail view.',
+          'Runs on static sample data, no backend or live pricing API.'
+        ],
+        href: 'https://github.com/Shanerex/CryptoUIJC'
+      },
+      {
+        name: 'alef-jasper-rebuild',
+        stack: 'Next.js · Spring AI',
+        status: 'in-progress',
+        description: [
+          'Full-stack rebuild of a marketing site: home, services, project portfolio, trust, team, contact and lead capture.',
+          'Next.js frontend, Spring Boot API and Postgres, running locally through Docker Compose.',
+          'Every feature specified through requirements, architecture and design docs before implementation.',
+          'Spec includes an AI RFQ concierge on Spring AI.'
+        ],
+        href: 'https://github.com/Shanerex/alef-jasper-rebuild'
+      },
+      {
+        name: 'Atlas',
+        stack: 'React · Spring Boot · PostgreSQL · GCP',
+        status: 'in-progress',
+        description: [
+          'In-house PIM replacing Fabric PIM, covering the subset of its feature set the client actually uses.',
+          'Co-drafted the technical design. Built spec-driven with Claude agents, hooks and skills, every piece of functionality scoped in its own spec.',
+          'React/Vite frontend, Spring Boot and PostgreSQL backend, deployed on GCP.'
+        ]
+      }
+    ];
+    const projects = rawProjects.map((p, i) => ({ ...p, idx: String(i + 1).padStart(2, '0'), accentText, accent2Text }));
+
+    const rawSkills = [
+      { category: 'Languages & Frameworks', lead: 2, items: ['Java', 'Spring Boot', 'JUnit 5', 'Hibernate · JPA'] },
+      { category: 'Cloud & Infrastructure', lead: 3, items: ['GCP Pub/Sub', 'Dataflow', 'BigQuery', 'Cloud Run', 'Cloud SQL', 'Cloud Build', 'Cloud Tasks', 'GCS', 'Cloud Monitoring', 'Cloud Scheduler', 'Docker'] },
+      { category: 'Databases & Data', lead: 2, items: ['PostgreSQL', 'SQL Server', 'Firestore', 'Apache Beam', 'Apache NiFi', 'Redis'] },
+      { category: 'Core Concepts', lead: 3, items: ['Event-Driven Architecture', 'Distributed Systems', 'Spec Driven Development', 'Microservices', 'System Design', 'REST API Design', 'Multithreading & Concurrency', 'Agentic Engineering'] },
+      { category: 'Tools', lead: 1, items: ['Claude Code', 'Git', 'Apache Maven', 'IntelliJ IDEA', 'Visual Studio Code'] }
+    ];
+    const skillGroups = rawSkills.map(g => ({
+      category: g.category,
+      chips: g.items.map((text, i) => i < g.lead ? {
+        text, font: 'var(--f-body)', size: '14.5px', weight: '600', pad: '9px 16px', bg: 'var(--ink)', color: 'var(--bg)', border: 'none'
+      } : {
+        text, font: 'var(--f-mono)', size: '12.5px', weight: '400', pad: '8px 14px', bg: 'transparent', color: 'var(--ink-dim)', border: '1px solid var(--line-strong)'
+      })
+    }));
+
+    return {
+      site, navItems, metrics, journey, projects, skillGroups,
+      mailHref: 'mailto:' + site.email,
+      resumeHref: '/resume.pdf',
+      showAvailability: this.props.showAvailability ?? true,
+      primary, primaryInk, secondary, accentText, accent2Text, theme,
+      progressRef: this.progressRef, toggleTheme: this.toggleTheme,
+      themeToggleLabel: isDark ? 'Light mode' : 'Dark mode',
+      bulbFill: isDark ? 'none' : 'currentColor',
+      education, now,
+      scrollToTop: this.scrollToTop,
+      scrollTopDisplay: this.state.showTop ? 'flex' : 'none',
+      year: new Date().getFullYear()
+    };
+  }
+}
+</script>
+</body>
+</html>

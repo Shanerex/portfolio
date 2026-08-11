@@ -3,21 +3,21 @@
 import { useEffect, useState } from 'react'
 import styles from './ThemeToggle.module.css'
 
-type Theme = 'night' | 'day'
+type Theme = 'dark' | 'light'
 const KEY = 'srs-theme'
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('night')
+  const [theme, setTheme] = useState<Theme>('dark')
 
-  // The pre-paint script is the source of truth on first render; read from it
-  // rather than recomputing, so the button label never disagrees with the page.
   useEffect(() => {
-    const current = document.documentElement.getAttribute('data-theme')
-    setTheme(current === 'day' ? 'day' : 'night')
+    // Hydration sync: layout.tsx's inline script sets data-theme pre-render; a lazy
+    // initializer would re-read it during hydration and mismatch the server HTML.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark')
   }, [])
 
   function toggle() {
-    const next: Theme = theme === 'day' ? 'night' : 'day'
+    const next: Theme = theme === 'light' ? 'dark' : 'light'
     setTheme(next)
     document.documentElement.setAttribute('data-theme', next)
     try {
@@ -27,17 +27,29 @@ export default function ThemeToggle() {
     }
   }
 
-  const label = theme === 'day' ? 'Day match' : 'Night match'
+  const label = theme === 'light' ? 'Dark mode' : 'Light mode'
 
   return (
     <button
       type="button"
       className={styles.toggle}
       onClick={toggle}
-      aria-label={`Switch to ${theme === 'day' ? 'night' : 'day'} match`}
+      aria-label={label}
+      title={label}
     >
-      <span className={styles.dot} aria-hidden="true" />
-      {label}
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill={theme === 'light' ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.44 1 .96 1.1 1.6h4.8c.1-.64.5-1.16 1.1-1.6A6 6 0 0 0 12 3z" />
+      </svg>
     </button>
   )
 }

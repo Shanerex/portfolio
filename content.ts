@@ -1,4 +1,4 @@
-export type Link = { label: string; href: string }
+export type NavItem = { method: 'GET' | 'POST'; path: string; href: string }
 
 export type ExperienceEntry = {
   title: string
@@ -17,6 +17,40 @@ export type Project = {
 
 export type Metric = { figure: string; label: string }
 
+export type Certification = { name: string }
+
+export type Publication = {
+  title: string
+  venue: string
+  date: string
+  description: string
+  href: string
+}
+
+export type EducationEntry = {
+  institution: string
+  field: string
+  cgpa: string
+  note: string
+}
+
+export type JourneyEntry =
+  | {
+      kind: 'education'
+      title: string
+      subtitle: string
+      dateLabel: string
+      note: string
+    }
+  | {
+      kind: 'work'
+      title: string
+      subtitle: string
+      dateLabel: string
+      bullets: string[]
+      current: boolean
+    }
+
 export const site = {
   name: ['Shane Rex', 'Sasikumar'] as const,
   thesis: 'No dwelling on the last point.',
@@ -34,15 +68,16 @@ export const site = {
   ] satisfies Metric[],
   email: 'shanerexsasikumar@gmail.com',
   nav: [
-    { label: 'Experience', href: '#experience' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'About', href: '#about' },
-  ] satisfies Link[],
-  links: [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shane-rex-sasikumar' },
-    { label: 'GitHub', href: 'https://github.com/Shanerex' },
-  ] satisfies Link[],
+    { method: 'GET', path: '/journey', href: '#journey' },
+    { method: 'GET', path: '/projects', href: '#projects' },
+    { method: 'GET', path: '/skills', href: '#skills' },
+    { method: 'GET', path: '/credentials', href: '#credentials' },
+    { method: 'GET', path: '/now', href: '#now' },
+    { method: 'POST', path: '/contact', href: '#contact' },
+  ] satisfies NavItem[],
+  linkedin: 'https://www.linkedin.com/in/shane-rex-sasikumar',
+  github: 'https://github.com/Shanerex',
+  resumeHref: '/resume.pdf',
 }
 
 export const experience: ExperienceEntry[] = [
@@ -70,6 +105,70 @@ export const experience: ExperienceEntry[] = [
       'Built Cloud Monitoring dashboards and multi-threshold alerting across distributed Cloud Run services, improving observability and cutting MTTR.',
       'Raised JUnit test coverage from 75% to 88% by introducing parameterized tests and mocking strategies.',
     ],
+  },
+]
+
+export const education: EducationEntry = {
+  institution: 'Thiagarajar College of Engineering',
+  field: 'Computer Science',
+  cgpa: '9.42 / 10',
+  note:
+    'Studies and tennis took most of my time in college, captained the team in my final year and we took the Zonals that same year. On the side I was exploring Android development, mostly UI work in Jetpack Compose, which is where cryptouijc came from.',
+}
+
+export const journey: JourneyEntry[] = [
+  {
+    kind: 'education',
+    title: education.institution,
+    subtitle: `${education.field} · CGPA ${education.cgpa}`,
+    dateLabel: 'EDUCATION',
+    note: education.note,
+  },
+  ...experience
+    .slice()
+    .reverse()
+    .map(
+      (role, i, arr): JourneyEntry => ({
+        kind: 'work',
+        title: role.title,
+        subtitle: role.company,
+        dateLabel: role.dates,
+        bullets: role.bullets,
+        current: i === arr.length - 1,
+      }),
+    ),
+]
+
+export type NowEntry = { tag: string; text: string }
+
+export const now: NowEntry[] = [
+  {
+    tag: 'AT WORK',
+    text: 'Rolling out Spec Driven Development as the default workflow across the team.',
+  },
+  {
+    tag: 'BUILDING',
+    text: 'Atlas, an in-house PIM built spec-driven end to end, deployed on GCP.',
+  },
+  {
+    tag: 'BUILDING',
+    text: 'A full-stack rebuild of a marketing site with an AI RFQ concierge on Spring AI.',
+  },
+]
+
+export const certifications: Certification[] = [
+  { name: 'Graph Developer - Associate' },
+  { name: 'AI Fluency Framework & Foundations' },
+]
+
+export const publications: Publication[] = [
+  {
+    title: 'Malware Detection in Android Application using Static Permission',
+    venue: 'ICIRCA 2023',
+    date: 'Aug 2023',
+    description:
+      'Detects Android malware from static permissions and API usage across a dataset of 398 apps, comparing Naive Bayes, Decision Tree and K-Neighbours. Naive Bayes came out most accurate.',
+    href: 'https://ieeexplore.ieee.org/document/10220934',
   },
 ]
 
@@ -164,6 +263,3 @@ export const skills: SkillGroup[] = [
     items: ['Claude Code', 'Git', 'Apache Maven', 'IntelliJ IDEA', 'Visual Studio Code'],
   },
 ]
-
-export const about =
-  "I studied Computer Science at Thiagarajar College of Engineering and came out the other side with a 9.42 CGPA. Outside of work most of my time goes to sport, tennis mostly, a few tournament wins from school and college days, plus cricket and badminton, and honestly I watch a lot more of all three than I actually play. Weekends are reserved for a good film, any language, as long as the story holds up."

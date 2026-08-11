@@ -1,0 +1,113 @@
+.section {
+  padding-block: clamp(72px, 10vw, 110px) clamp(40px, 6vw, 64px);
+}
+
+/* Section marker uses the shared global .marker/.marker-label/.marker-rule
+   classes from app/globals.css (Task 1) — no local rule needed here. */
+
+.rail { position: relative; padding-left: 32px; }
+.railLine {
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--line-strong);
+}
+
+.entry { position: relative; padding-bottom: 44px; }
+.entry:last-child { padding-bottom: 0; }
+
+.dot {
+  position: absolute;
+  left: -27px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+}
+.dotAccent { background: var(--accent-text); }
+.dotMute { background: var(--ink-mute); }
+
+.tags { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+
+.kindPill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-dim);
+}
+
+.currentTag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: var(--t-h2);
+  letter-spacing: -.01em;
+}
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--ink-dim);
+  margin-top: 6px;
+}
+
+.bullets {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 780px;
+}
+
+.bullets li {
+  display: flex;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink);
+  opacity: .88;
+}
+
+.arrow { color: var(--accent-2-text); flex: none; }
+
+.note {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  opacity: .78;
+  max-width: 700px;
+  margin: 14px 0 0;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dotAccent { animation: none; }
+}

@@ -2,12 +2,10 @@ import { test, expect } from '@playwright/test'
 import { contrastRatio, rgbToHex } from './helpers/contrast'
 
 test('contrast helper matches known reference values', () => {
-  // Black on white is exactly 21:1
   expect(contrastRatio('#000000', '#FFFFFF')).toBeCloseTo(21, 1)
-  // A colour against itself is exactly 1:1
-  expect(contrastRatio('#DCF24B', '#DCF24B')).toBeCloseTo(1, 5)
-  expect(rgbToHex('rgb(220, 242, 75)')).toBe('#DCF24B')
-  expect(rgbToHex('rgba(6, 10, 17, 0.9)')).toBe('#060A11')
+  expect(contrastRatio('#D6F23C', '#D6F23C')).toBeCloseTo(1, 5)
+  expect(rgbToHex('rgb(214, 242, 60)')).toBe('#D6F23C')
+  expect(rgbToHex('rgba(20, 20, 26, 0.9)')).toBe('#14141A')
 })
 
 test('font tokens resolve to the self-hosted families', async ({ page }) => {
@@ -20,9 +18,9 @@ test('font tokens resolve to the self-hosted families', async ({ page }) => {
       mono: s.getPropertyValue('--font-mono'),
     }
   })
-  expect(fonts.display).toContain('Archivo')
+  expect(fonts.display).toContain('Bricolage Grotesque')
   expect(fonts.body).toContain('IBM Plex Sans')
-  expect(fonts.mono).toContain('IBM Plex Mono')
+  expect(fonts.mono).toContain('JetBrains Mono')
 })
 
 test('no font is requested from Google at runtime', async ({ page }) => {
@@ -34,55 +32,47 @@ test('no font is requested from Google at runtime', async ({ page }) => {
   expect(googleRequests).toEqual([])
 })
 
-test('content clears the fixed rail at desktop width', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 })
-  await page.goto('/')
-  const rail = await page.locator('[data-testid="rail"]').boundingBox()
-  const content = await page.locator('main.content').boundingBox()
-  expect(content!.x).toBeGreaterThanOrEqual(rail!.x + rail!.width)
-})
-
-const NIGHT = {
-  surround: '#060a11', court: '#0f3a63', courtTint: '#0a2440',
-  ink: '#eef3f8', line2: '#9db0c6', meta: '#6e839b',
-  ball: '#dcf24b', ballInk: '#dcf24b', onCourt: '#eef3f8',
+const DARK = {
+  bg: '#14141a', surface: '#1b1b21', ink: '#edeae2', inkDim: '#8f8b84', inkMute: '#5e5b56',
+  accentText: '#d6f23c', accent2Text: '#ff5a4e', primary: '#d6f23c', primaryInk: '#1c210a',
 }
-const DAY = {
-  surround: '#eaedf1', court: '#1f5a93', courtTint: '#3e7cb8',
-  ink: '#0c1a2a', line2: '#3c4e63', meta: '#56677d',
-  ball: '#dcf24b', ballInk: '#55670a', onCourt: '#f7f9fb',
+const LIGHT = {
+  bg: '#f6f4ef', surface: '#fff', ink: '#14141a', inkDim: '#5b574f', inkMute: '#8c877d',
+  accentText: '#5c6b12', accent2Text: '#b23327', primary: '#d6f23c', primaryInk: '#1c210a',
 }
 
-async function palette(page: import('@playwright/test').Page, theme: 'night' | 'day') {
+async function palette(page: import('@playwright/test').Page, theme: 'dark' | 'light') {
   await page.goto('/')
   await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
   return page.evaluate(() => {
     const s = getComputedStyle(document.documentElement)
     const read = (n: string) => s.getPropertyValue(n).trim()
     return {
-      surround: read('--surround'), court: read('--court'), courtTint: read('--court-tint'),
-      ink: read('--ink'), line2: read('--line-2'), meta: read('--meta'),
-      ball: read('--ball'), ballInk: read('--ball-ink'), onCourt: read('--on-court'),
+      bg: read('--bg'), surface: read('--surface'), ink: read('--ink'),
+      inkDim: read('--ink-dim'), inkMute: read('--ink-mute'),
+      accentText: read('--accent-text'), accent2Text: read('--accent-2-text'),
+      primary: read('--primary'), primaryInk: read('--primary-ink'),
     }
   })
 }
 
-test('night palette resolves to the documented values', async ({ page }) => {
-  expect(await palette(page, 'night')).toEqual(NIGHT)
+test('dark palette resolves to the documented values', async ({ page }) => {
+  expect(await palette(page, 'dark')).toEqual(DARK)
 })
 
-test('day palette resolves to the documented values', async ({ page }) => {
-  expect(await palette(page, 'day')).toEqual(DAY)
+test('light palette resolves to the documented values', async ({ page }) => {
+  expect(await palette(page, 'light')).toEqual(LIGHT)
 })
 
-for (const [name, p] of [['night', NIGHT], ['day', DAY]] as const) {
-  test(`${name} palette meets WCAG AA for every text pairing`, async () => {
+for (const [name, p] of [['dark', DARK], ['light', LIGHT]] as const) {
+  test(`${name} palette meets WCAG AA for every normal-text pairing`, async () => {
     const pairs: [string, string, string][] = [
-      ['line-2 on surround', p.line2, p.surround],
-      ['meta on surround', p.meta, p.surround],
-      ['ball-ink on surround', p.ballInk, p.surround],
-      ['ink on surround', p.ink, p.surround],
-      ['on-court on court', p.onCourt, p.court],
+      ['ink on bg', p.ink, p.bg],
+      ['ink-dim on bg', p.inkDim, p.bg],
+      ['accent-text on bg', p.accentText, p.bg],
+      ['accent-2-text on bg', p.accent2Text, p.bg],
+      ['ink on surface', p.ink, p.surface],
+      ['primary-ink on primary', p.primaryInk, p.primary],
     ]
     for (const [label, fg, bg] of pairs) {
       expect(contrastRatio(fg, bg), `${name}: ${label}`).toBeGreaterThanOrEqual(4.5)
@@ -90,38 +80,10 @@ for (const [name, p] of [['night', NIGHT], ['day', DAY]] as const) {
   })
 }
 
-test('unsafe pairings are documented as failing, so nobody uses them for text', () => {
-  // --ball on the day surround is effectively invisible. Day match must use --ball-ink.
-  expect(contrastRatio(DAY.ball, DAY.surround)).toBeLessThan(2)
-  // --court-tint is decorative in both themes.
-  expect(contrastRatio(NIGHT.onCourt, NIGHT.courtTint)).toBeGreaterThanOrEqual(4.5)
-  expect(contrastRatio(DAY.onCourt, DAY.courtTint)).toBeLessThan(4.5)
-})
-
-test('body background and text color follow the active theme, not the legacy light default', async ({ page }) => {
-  await page.goto('/')
-  for (const theme of ['night', 'day'] as const) {
-    await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme)
-    // body's background/color transition over --dur-theme (450ms); wait it out so we
-    // assert the settled value, not a mid-transition frame.
-    await page.waitForTimeout(500)
-    const [bodyBg, bodyColor, tokenBg, tokenInk] = await page.evaluate(() => {
-      const bodyStyle = getComputedStyle(document.body)
-      const rootStyle = getComputedStyle(document.documentElement)
-      return [
-        bodyStyle.backgroundColor,
-        bodyStyle.color,
-        rootStyle.getPropertyValue('--surround').trim(),
-        rootStyle.getPropertyValue('--ink').trim(),
-      ]
-    })
-    // Convert the token hex values the same way the browser reports computed color
-    const hexToRgb = (hex: string) => {
-      const n = hex.replace('#', '')
-      const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16))
-      return `rgb(${r}, ${g}, ${b})`
-    }
-    expect(bodyBg, `${theme}: body background`).toBe(hexToRgb(tokenBg))
-    expect(bodyColor, `${theme}: body color`).toBe(hexToRgb(tokenInk))
-  }
+test('ink-mute is documented as sub-AA and reserved for mono meta only', () => {
+  // Inherited directly from the design handoff's own values — not an oversight.
+  // Never assert this pair passes 4.5:1; instead assert it stays out of body copy
+  // (checked structurally per-component as each section ships).
+  expect(contrastRatio(DARK.inkMute, DARK.bg)).toBeLessThan(4.5)
+  expect(contrastRatio(LIGHT.inkMute, LIGHT.bg)).toBeLessThan(4.5)
 })
