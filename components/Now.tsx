@@ -5,7 +5,7 @@ export default function Now() {
   return (
     <section id="now" className={`${styles.section} wrap reveal`}>
       <div className="marker reveal">
-        <span className="marker-label">{'// 04_now'}</span>
+        <span className="marker-label">{'// 05_now'}</span>
         <span className="marker-rule" />
       </div>
       {now.map((entry, i) => (
